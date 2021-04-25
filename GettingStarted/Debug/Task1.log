@@ -1,0 +1,3 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\Microsoft.Common.CurrentVersion.targets(1755,5): warning : The referenced project '..\ITest\ITest.vcxproj' does not exist.
+  Task1.cpp
+  Task1.vcxproj -> C:\Users\jimfa\Desktop\GettingStarted\Debug\Task1.lib
