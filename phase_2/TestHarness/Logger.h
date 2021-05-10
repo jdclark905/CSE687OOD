@@ -27,6 +27,6 @@ class Logger
 public:
 	//default constructor
 	Logger();
-	bool ToFile();
+	bool ToFile(std::string);
 	bool ToConsole(std::string);
 };
