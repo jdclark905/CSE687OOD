@@ -34,6 +34,7 @@ std::string TestEngine::GetTimestamp() {
 	return (std::string)buffer;
 }
 
+Logger logThis;
 
 void TestEngine::Execute(UnitTest unit) {
 	try {
@@ -41,6 +42,8 @@ void TestEngine::Execute(UnitTest unit) {
 
 		for (int i = 0; i < (int)list.size(); i++) {
 			std::cout << FormatMessage(list[i]) << std::endl;
+			logThis.ToConsole(FormatMessage(list[i]));
+			logThis.ToFile(FormatMessage(list[i]));
 			/*
 			* Journal message to file or console.
 			* Logger::GetInstance().Journal(entry);
