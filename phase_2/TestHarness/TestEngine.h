@@ -3,6 +3,7 @@
 #include <string>
 #include <chrono>
 #include "UnitTest.h"
+#include "Logger.h"
 
 class TestEngine
 {
