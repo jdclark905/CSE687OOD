@@ -1,5 +1,2 @@
-﻿  Main.cpp
-  TestEngine.cpp
-C:\Users\tanay\OneDrive\Documents\University - Syracuse University\Courses\CSE-687 Object Oriented Design\CSE-687_REPO\phase_2\TestHarness\TestEngine.cpp(55,9): warning C4834: discarding return value of function with 'nodiscard' attribute
-  Generating Code...
+﻿  UnitTest.cpp
   TestHarness.vcxproj -> C:\Users\tanay\OneDrive\Documents\University - Syracuse University\Courses\CSE-687 Object Oriented Design\CSE-687_REPO\phase_2\TestHarness\x64\Debug\TestHarness.exe

@@ -1,8 +1,9 @@
 #include "UnitTest.h"
+using std::_Xruntime_error;
 
 UnitTest::UnitTest() {}
 
-// copies of int test, and assertion stuct are passed in the assert function
+// the assertion stuct is passed in to the assert function
 void UnitTest::AssertEquals(
     int (*function)(),
     int test, 
@@ -45,8 +46,7 @@ int testFunction2()
 
 int testFunction3()
 {
-    // raises exception
-    int number = 10/5;
-
-    return number;
+    // raise exception
+    //std::string("abc").substr(10);
+    return 0;
 }

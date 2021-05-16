@@ -1,6 +1,7 @@
 
 #include <vector>
 #include <string>
+#include <exception>
 
 #ifndef UNIT_TEST
 #define UNIT_TEST
@@ -13,10 +14,6 @@ int testFunction1();
 int testFunction2();
 int testFunction3();
 
-/*
-
-*/
-
 struct assertion {
 	string assertion_type = "test";
 	string function_name = "func";
@@ -24,9 +21,12 @@ struct assertion {
 	int logging_level = 0;
 };
 
-
 class UnitTest
 {
+
+private:
+	vector<assertion> asserts_;
+
 public:
 
 	// default constructor
@@ -43,8 +43,6 @@ public:
 	// getter for retrieving tests and their results
 	vector<assertion> GetAssertions();
 
-private:
-	vector<assertion> asserts_;
 };
 
 #endif
