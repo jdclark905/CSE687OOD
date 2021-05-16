@@ -12,11 +12,11 @@ std::string TestEngine::FormatMessage(assertion item) {
 	std::string message = "";
 	std::string status = (item.result ? "Passed" : "Failed");
 	std::string name = item.function_name + " (" + item.assertion_type + ")";
-	if (item.logging_level == "PassFailOnly")
+	if (item.logging_level == PassFailOnly)
 		message = status;
-	else if (item.logging_level == "PassFailMessage")
+	else if (item.logging_level == PassFailMessage)
 		message = status + " -> " + name;
-	else if (item.logging_level == "PassFailMessageWithTimestamp")
+	else if (item.logging_level == PassFailMessageWithTimestamp)
 		message = GetTimestamp() + ": " + status + " -> " + name;
 
 	return message;
@@ -41,7 +41,7 @@ void TestEngine::Execute(UnitTest unit) {
 		std::vector<assertion> list = unit.GetAssertions();
 
 		for (int i = 0; i < (int)list.size(); i++) {
-			std::cout << FormatMessage(list[i]) << std::endl;
+			//std::cout << FormatMessage(list[i]) << std::endl;
 			logThis.ToConsole(FormatMessage(list[i]));
 			logThis.ToFile(FormatMessage(list[i]));
 			/*

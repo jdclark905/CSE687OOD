@@ -21,7 +21,7 @@ struct assertion {
 	string assertion_type = "test";
 	string function_name = "func";
 	bool result = false;
-	string logging_level = "PassFailOnly";
+	int logging_level = 0;
 };
 
 
@@ -39,8 +39,6 @@ public:
 		assertion assert,
 		string func_name
 	);
-
-	// void SetAssertions(vector<assertions> functions);
 
 	// getter for retrieving tests and their results
 	vector<assertion> GetAssertions();

@@ -20,13 +20,12 @@ int main()
 	UnitTest UT = UnitTest();
 
 	// setting the log level and name
-	assert.logging_level = "PassFailMessage";
+	assert.logging_level = PassFailOnly;
 
 	UT.AssertEquals(funct_pointer1, 0, assert, "Test1");
 	UT.AssertEquals(funct_pointer2, 0, assert, "Test2");
 
-
-	assert.logging_level = "PassFailMessageWithTimestamp";
+	assert.logging_level = PassFailMessageWithTimestamp;
 	UT.AssertEquals(funct_pointer3, 0, assert, "Test3");
 
 	TestEngine::GetInstance().Execute(UT);

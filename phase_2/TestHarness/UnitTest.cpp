@@ -4,7 +4,7 @@ UnitTest::UnitTest() {}
 
 // copies of int test, and assertion stuct are passed in the assert function
 void UnitTest::AssertEquals(
-    int (*function)(), 
+    int (*function)(),
     int test, 
     assertion assert,
     string func_name
@@ -15,24 +15,16 @@ void UnitTest::AssertEquals(
 
     if ((*function)() == test)
     {
-        // store assertion struct in vector of assertion structs
-        
         assert.result = true;
-    } 
+    }
     else
     {
         assert.result = false;
     }
 
+    // store assertion struct in vector of assertion structs
     asserts_.push_back(assert);
 }
-
-/*
-void UnitTest::SetAssertions(vector<assertions> functions)
-{
-    function_pointers = functions;
-}
-*/
 
 vector<assertion> UnitTest::GetAssertions()
 {
