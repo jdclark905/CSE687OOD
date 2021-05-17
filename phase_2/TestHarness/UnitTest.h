@@ -1,6 +1,7 @@
 
 #include <vector>
 #include <string>
+#include <exception>
 
 #ifndef UNIT_TEST
 #define UNIT_TEST
@@ -13,20 +14,20 @@ int testFunction1();
 int testFunction2();
 int testFunction3();
 
-/*
-
-*/
-
 struct assertion {
 	string assertion_type = "test";
 	string function_name = "func";
 	bool result = false;
-	string logging_level = "PassFailOnly";
+	int logging_level = 0;
+	int (*function)();
 };
-
 
 class UnitTest
 {
+
+private:
+	vector<assertion> asserts_;
+
 public:
 
 	// default constructor
@@ -36,17 +37,12 @@ public:
 	void AssertEquals(
 		int (*function)(), 
 		int test, 
-		assertion assert,
-		string func_name
+		assertion assert
 	);
 
-	// void SetAssertions(vector<assertions> functions);
-
 	// getter for retrieving tests and their results
-	vector<assertion> GetAssertions();
+	// vector<assertion> GetAssertions();
 
-private:
-	vector<assertion> asserts_;
 };
 
 #endif
