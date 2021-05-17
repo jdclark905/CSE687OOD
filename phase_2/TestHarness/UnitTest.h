@@ -19,6 +19,7 @@ struct assertion {
 	string function_name = "func";
 	bool result = false;
 	int logging_level = 0;
+	int (*function)();
 };
 
 class UnitTest
@@ -36,12 +37,11 @@ public:
 	void AssertEquals(
 		int (*function)(), 
 		int test, 
-		assertion assert,
-		string func_name
+		assertion assert
 	);
 
 	// getter for retrieving tests and their results
-	vector<assertion> GetAssertions();
+	// vector<assertion> GetAssertions();
 
 };
 

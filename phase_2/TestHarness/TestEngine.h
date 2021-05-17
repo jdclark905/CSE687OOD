@@ -18,5 +18,5 @@ public:
 	TestEngine operator=(const TestEngine&) = delete;
 	static TestEngine& GetInstance();
 
-	void Execute(UnitTest);
+	void Execute();
 };

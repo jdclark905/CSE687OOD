@@ -1,3 +1,4 @@
-Passed
-Failed
-05/15/21 22:44:06: Passed -> Test3 (equals)
+Failed -> Test1 (equals)
+Failed -> Test2 (equals)
+05/16/21 23:26:31: Failed -> Test3 (equals)
+invalid string position
