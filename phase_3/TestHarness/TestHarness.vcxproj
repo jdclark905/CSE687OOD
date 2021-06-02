@@ -66,6 +66,7 @@
   <ItemGroup>
     <ClInclude Include="ITest.h" />
     <ClInclude Include="Logger.h" />
+    <ClInclude Include="TestProcess.h" />
     <ClInclude Include="Software.h" />
     <ClInclude Include="TestEngine.h" />
     <ClInclude Include="UnitTest.h" />
