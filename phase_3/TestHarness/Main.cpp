@@ -1,71 +1,77 @@
 
-#include "TestEngine.h"
 #include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
 #include <queue>
-#include "TestProcess.h"
-#include <winsock.h>
+#include <winsock2.h>
+#include <WS2tcpip.h>
+#include "Message.h"
 
-#define CMD_ARG_APPNAME "TestHarness"
-#define CMD_ARG_CLIENT "client"
+#define NUM_TEST_THREADS 3
+#define SERVER_PORT "12345"
 
 using std::cout;
 
-void runHost();
-void runClient();
+std::thread msg_thread;
+std::mutex cout_mutex, msg_mutex, test_mutex;
+std::condition_variable msg_condv, test_condv;
+std::queue<std::string> msg_queue, test_queue;
+bool stop = false;
 
-DWORD myProcId;
+// Socket listener
+void listener(){
 
-// Client parameters to include host IP
-// address and port for communication channel
-int main(int argc, char *argv[])
-{
-	// Set current process ID
-	myProcId = GetCurrentProcessId();
+}
 
-	// No arguments (other than process name) runs as test harness host
-	if (argc == 1){
-		cout << "Host process (PID " << myProcId << ") starting\n";
-		runHost();
-	}
-	else {
-		runClient();
-	}
+// Message handler
+void msgHandler(){
 	
 }
 
-// Run-time instance is a test harness host process
-void runHost()
-{
-	const int numClients = 4;
-	TestProcess testClient[numClients];
-	STARTUPINFO si;
-	GetStartupInfo(&si);
-	std::queue<HANDLE> rdyQ;
-
-	// Create child test processes
-	for (int t = 0; t < numClients; t++)
-	{
-		testClient[t].setTitle("Test Client " + std::to_string(t));
-		testClient[t].setCmdLine("TestHarness.exe " + std::to_string(t));
-		cout << "Creating client process " << t << '\n';
-		if (testClient[t].create())
-		{
-			cout << "Client " << t << " created\n";
-		}
-	}
-
-	for (int i = 0; i < numClients; i++)
-	{
-		WaitForSingleObject(testClient[i].getHandle(), 10000);
-		cout << "Client " << i << " exited\n";
-	}
-
-	system("pause");
+// Test runner
+void testRunner(int nr){
+	cout << "testRunner(" << nr << ") started.\n";
+	while (!stop){}
+	cout << "testRunner(" << nr << ") stopping.\n";
 }
 
-// Run-time instance is a test harness client process
-void runClient()
+// Main entry point
+int main(int argc, char *argv[])
 {
-	cout << "Client process ID " << myProcId << " started\n";
-	Sleep(5000);
+	/*
+	WSADATA wsaData;
+	int iResult;
+	SOCKET listenSocket = NULL;
+
+	// Initialize socket listener
+	cout << "Initializing socket listener...\n";
+	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
+	{
+		cout << "WSAStartup failed: " << WSAGetLastError() << '\n';
+		return 1;
+	}
+	listenSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (listenSocket == INVALID_SOCKET)
+	{
+		cout << "Listen socket creation failed: " << WSAGetLastError() << '\n';
+		return 1;
+	}
+	
+
+	// Startup message handler
+	msg_thread = std::thread(msgHandler);
+	*/
+
+	// Startup test runner thread pool
+	for (int i = 0; i < NUM_TEST_THREADS; i++)
+	{
+		std::thread t(testRunner, i);
+		t.detach();
+	}
+
+	std::this_thread::sleep_for(std::chrono::seconds(5));
+	stop = true;
+
+	system("pause");
 }
