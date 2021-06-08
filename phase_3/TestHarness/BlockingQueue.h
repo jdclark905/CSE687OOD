@@ -51,25 +51,6 @@ BlockingQueue<T>::BlockingQueue(BlockingQueue<T>&& bq)
 	}
 }
 
-// Assignment operator
-template<typename T>
-BlockingQueue<T>& BlockingQueue<T>::operator=(BlockingQueue<T>&& bq)
-{
-	it(this == &bq)
-	{
-		return *this;
-	}
-
-	std::lock_guard<std::mutex> lock(_mutex);
-	
-	_queue = bq._queue;
-	while (bq._queue.size() > 0)
-	{
-		bq._queue.pop();
-	}
-	return *this;
-}
-
 // Get first item from queue
 template <typename T>
 T BlockingQueue<T>::dequeue()

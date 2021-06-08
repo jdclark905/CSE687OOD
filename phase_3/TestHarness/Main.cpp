@@ -1,77 +1,84 @@
 
 #include <iostream>
 #include <thread>
-#include <mutex>
-#include <condition_variable>
-#include <queue>
 #include <winsock2.h>
 #include <WS2tcpip.h>
 #include "Message.h"
+#include "BlockingQueue.h"
 
 #define NUM_TEST_THREADS 3
-#define SERVER_PORT "12345"
 
 using std::cout;
 
 std::thread msg_thread;
-std::mutex cout_mutex, msg_mutex, test_mutex;
-std::condition_variable msg_condv, test_condv;
-std::queue<std::string> msg_queue, test_queue;
-bool stop = false;
+std::mutex cout_mutex;
+BlockingQueue<Message> msg_queue;
+bool stopTestRunner[NUM_TEST_THREADS];
+bool stopMsgHandler = false;
 
-// Socket listener
-void listener(){
-
+// Print to console
+void print(const std::string& msg)
+{
+	std::lock_guard<std::mutex> lock(cout_mutex);
+	cout << msg << '\n';
 }
+
+/*************************/
+/* Functions for threads */
+/*************************/
 
 // Message handler
 void msgHandler(){
-	
+	Message msg;
+	while (!stopMsgHandler)
+	{
+		msg = msg_queue.dequeue();
+		print(msg.describe());
+	}
 }
 
 // Test runner
 void testRunner(int nr){
-	cout << "testRunner(" << nr << ") started.\n";
-	while (!stop){}
-	cout << "testRunner(" << nr << ") stopping.\n";
+	Message msg;
+	msg._source = "testRunner[" + std::to_string(nr) + "]";
+	msg._dest = "main";
+	msg._type = MSG_TYPE_STATUS;
+	msg.setDateTimeNow();
+	msg._body = "Ready";
+	msg_queue.enqueue(msg);
+	while (!stopTestRunner[nr]){}
+	msg.setDateTimeNow();
+	msg._body = "Stopped";
+	msg_queue.enqueue(msg);
+	stopTestRunner[nr] = false;
 }
 
-// Main entry point
+/********************/
+/* Main entry point */
+/********************/
 int main(int argc, char *argv[])
 {
-	/*
-	WSADATA wsaData;
-	int iResult;
-	SOCKET listenSocket = NULL;
-
-	// Initialize socket listener
-	cout << "Initializing socket listener...\n";
-	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
-	{
-		cout << "WSAStartup failed: " << WSAGetLastError() << '\n';
-		return 1;
-	}
-	listenSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if (listenSocket == INVALID_SOCKET)
-	{
-		cout << "Listen socket creation failed: " << WSAGetLastError() << '\n';
-		return 1;
-	}
-	
-
 	// Startup message handler
-	msg_thread = std::thread(msgHandler);
-	*/
+	std::thread(msgHandler).detach();
 
 	// Startup test runner thread pool
 	for (int i = 0; i < NUM_TEST_THREADS; i++)
 	{
+		print("main creating testRunner[" + std::to_string(i) + "]");
+		stopTestRunner[i] = false;
 		std::thread t(testRunner, i);
 		t.detach();
 	}
 
 	std::this_thread::sleep_for(std::chrono::seconds(5));
-	stop = true;
+	for (int i = 0; i < NUM_TEST_THREADS; i++)
+	{
+		stopTestRunner[i] = true;
+	}
+
+	std::this_thread::sleep_for(std::chrono::seconds(2));
+
+	stopMsgHandler = true;
 
 	system("pause");
 }

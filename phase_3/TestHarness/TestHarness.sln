@@ -5,8 +5,6 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestHarness", "TestHarness.vcxproj", "{392CA179-DC11-47BE-94AA-6334A4C01505}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Software", "..\Software\Software.vcxproj", "{85B04835-EF6D-48CF-841D-09124BFA2264}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -17,10 +15,6 @@ Global
 		{392CA179-DC11-47BE-94AA-6334A4C01505}.Debug|Win32.Build.0 = Debug|Win32
 		{392CA179-DC11-47BE-94AA-6334A4C01505}.Release|Win32.ActiveCfg = Release|Win32
 		{392CA179-DC11-47BE-94AA-6334A4C01505}.Release|Win32.Build.0 = Release|Win32
-		{85B04835-EF6D-48CF-841D-09124BFA2264}.Debug|Win32.ActiveCfg = Debug|Win32
-		{85B04835-EF6D-48CF-841D-09124BFA2264}.Debug|Win32.Build.0 = Debug|Win32
-		{85B04835-EF6D-48CF-841D-09124BFA2264}.Release|Win32.ActiveCfg = Release|Win32
-		{85B04835-EF6D-48CF-841D-09124BFA2264}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
