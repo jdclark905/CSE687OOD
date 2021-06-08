@@ -3,8 +3,5 @@
 class ITest
 {
 public:
-	// Implements to run test(s)
-	virtual bool execute() = 0;
-
-	bool runTest(bool (*function)());
+	virtual bool runTest() = 0;
 };

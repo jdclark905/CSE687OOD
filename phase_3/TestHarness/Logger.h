@@ -1,10 +1,7 @@
 #pragma once
 
 #include <string>
-#include <fstream>
-#include <iostream>
-
-using std::string;
+#include <mutex>
 
 enum LogLevel {
 	PassFailOnly,
@@ -12,21 +9,23 @@ enum LogLevel {
 	PassFailMessageWithTimestamp
 };
 
-struct LogEntry
+struct TestResult
 {
 	LogLevel level = PassFailOnly;
-	string message = "";
+	std::string message = "";
 	bool status;
-	string error = "";
-
+	std::string error = "";
 };
 
 class Logger
 {
+private:
+	static std::mutex _coutMutex;
+	static std::mutex _fileMutex;
+	static std::string _fileName;
 
 public:
-	//default constructor
-	Logger();
-	bool ToFile(std::string);
-	bool ToConsole(std::string);
+	static void ToFile(const std::string &msg);
+	static void ToConsole(const std::string &msg);
+	static std::string CurrentTimeStamp();
 };

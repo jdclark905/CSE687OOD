@@ -1,26 +1,38 @@
+#include <chrono>
+#include <iostream>
+#include <fstream>
 #include "Logger.h"
 
-Logger::Logger()
-{
+std::mutex Logger::_coutMutex;
+std::mutex Logger::_fileMutex;
+std::string Logger::_fileName = "Harness_Logger.txt";
 
+// Print to console
+void Logger::ToConsole(const std::string &msg)
+{
+	std::lock_guard<std::mutex> lock(_coutMutex);
+	std::cout << msg << '\n';
 }
 
-bool Logger::ToConsole(std::string message)
+// Append log file
+void Logger::ToFile(const std::string &msg)
 {
-	std::cout << message << std::endl;
-	return true;
+	std::ofstream logFile;
+	logFile.open(_fileName.c_str(), std::ios::app);
+	logFile << msg << '\n';
+	logFile.close();
 }
 
-bool Logger::ToFile(std::string message)
+// Get current timestamp, formatted as 'MM/DD/YY HH:MM:SS'
+std::string Logger::CurrentTimeStamp()
 {
-	//open file in write mode
-	std::ofstream outfile;
-	outfile.open("Harness_Logger.txt", std::ios::app); //this will append to the file
+	time_t now;
+	struct tm timeinfo;
+	char buffer[20];
 
-	//the actual writing
-	outfile << message << std::endl;
+	time(&now);
+	localtime_s(&timeinfo, &now);
 
-	outfile.close();
-
-	return true;
+	strftime(buffer, 20, "%D %T", &timeinfo);
+	return (std::string)buffer;
 }

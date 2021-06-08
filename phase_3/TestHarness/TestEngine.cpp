@@ -1,36 +1,29 @@
 #include "TestEngine.h"
+#include "Logger.h"
 
-TestEngine::TestEngine() {
+TestEngine* TestEngine::_instance = nullptr;
+std::mutex TestEngine::_mtx;
+
+TestEngine::TestEngine() : _msgQueue(), _testQueue(), _runnerPool()
+{
 }
 
-std::string TestEngine::FormatMessage(assertion item) {
-	std::string message = "";
-	std::string status = (item.result ? "Passed" : "Failed");
-	std::string name = item.function_name + " (" + item.assertion_type + ")";
-	if (item.logging_level == PassFailOnly)
-		message = status;
-	else if (item.logging_level == PassFailMessage)
-		message = status + " -> " + name;
-	else if (item.logging_level == PassFailMessageWithTimestamp)
-		message = GetTimestamp() + ": " + status + " -> " + name;
-
-	return message;
+void TestEngine::testRunner(int id)
+{
+	
 }
 
-std::string TestEngine::GetTimestamp() {
-	time_t now;
-	struct tm timeinfo;
-	char buffer[20];
-
-	time(&now);
-	localtime_s(&timeinfo, &now);
-
-	strftime(buffer, 20, "%x %X", &timeinfo);
-	return (std::string)buffer;
+TestEngine* TestEngine::getInstance()
+{
+	std::lock_guard<std::mutex> lock(_mtx);
+	if (_instance == nullptr)
+	{
+		_instance = new TestEngine();
+	}
+	return _instance;
 }
 
-Logger logThis;
-
-void TestEngine::Execute() {
+void TestEngine::start()
+{
 
 }

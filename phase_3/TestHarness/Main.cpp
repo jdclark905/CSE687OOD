@@ -33,22 +33,19 @@ void msgHandler(){
 	while (!stopMsgHandler)
 	{
 		msg = msg_queue.dequeue();
-		print(msg.describe());
+		
 	}
 }
 
 // Test runner
 void testRunner(int nr){
 	Message msg;
-	msg._source = "testRunner[" + std::to_string(nr) + "]";
-	msg._dest = "main";
-	msg._type = MSG_TYPE_STATUS;
-	msg.setDateTimeNow();
-	msg._body = "Ready";
+	msg.source = "testRunner[" + std::to_string(nr) + "]";
+	msg.type = RunnerStatus;
+	msg.body = "Ready";
 	msg_queue.enqueue(msg);
 	while (!stopTestRunner[nr]){}
-	msg.setDateTimeNow();
-	msg._body = "Stopped";
+	msg.body = "Stopped";
 	msg_queue.enqueue(msg);
 	stopTestRunner[nr] = false;
 }
