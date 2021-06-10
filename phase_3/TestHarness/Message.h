@@ -1,30 +1,25 @@
 #pragma once
 
 #include <string>
-#include <map>
-#include <ctime>
-#include "Logger.h"
+#include <unordered_map>
+#include <winsock.h>
 
-enum MessageType
+struct EndPoint
 {
-	Other,
-	RunnerReady,
-	RunnerTesting,
-	TestResult
+	std::string address;
+	int port;
+	
+	EndPoint(std::string addr = "localhost", USHORT p = 10000);
+	std::string to_string() const;
+	static EndPoint from_string(const std::string& str);
 };
 
-std::map<MessageType, std::string> MessageTypeMap = 
+class Message
 {
-	{ Other, "Other" },
-	{ RunnerReady, "Ready" },
-	{ RunnerTesting, "Testing" },
-	{ TestResult, "Test Result" }
-};
-
-struct Message
-{
-	std::string source = "";
-	MessageType type = Other;
-	std::string timestamp = Logger::CurrentTimeStamp();
-	std::string body = "";
+private:
+	std::unordered_map<std::string, std::string> _attributes;
+	struct sockaddr_in sa;
+public:
+	Message();
+	Message(EndPoint src, EndPoint dst);
 };

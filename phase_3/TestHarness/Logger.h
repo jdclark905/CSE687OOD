@@ -25,6 +25,7 @@ private:
 	static std::string _fileName;
 
 public:
+	Logger();
 	static void ToFile(const std::string &msg);
 	static void ToConsole(const std::string &msg);
 	static std::string CurrentTimeStamp();

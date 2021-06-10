@@ -8,22 +8,28 @@
 #include "Message.h"
 #include "BlockingQueue.h"
 
-#define NUM_RUNNERS 3
-
 /* Thread-safe singleton class to run test harness */
 class TestEngine
 {
 private:
+	struct 
+
 	TestEngine();
 	~TestEngine();
 
 	static TestEngine* _instance;
 	static std::mutex _mtx;
-	BlockingQueue<Message> _msgQueue;		// Queue for messages received by test runners
-	BlockingQueue<Message> _testQueue;		// Queue for test requests that runners wait on
-	std::vector<std::thread> _runnerPool;	// Test runner thread pool
 
-	void testRunner(int id);				// Test runner thread function
+	BlockingQueue<Message> _msgQueue;		// Queue for messages received by test runners
+	BlockingQueue<std::string > _testQueue;	// Queue for test requests that runners wait on
+	std::thread _msgHandler;				// Message handler thread
+	std::thread _clientHandler;				// Client connection handler thread
+	std::vector<std::thread> _testHandlers;	// Test handler thread pool
+
+	void runMsgHandler();					// Message handler thread function
+	void runClientHandler();				// Client connection handler funciton
+	void runTestHandler(const int);			// Test handler thread function
+	void postMsg(Message);
 
 public:
 	// Prevent copying and assignment
