@@ -2,24 +2,22 @@
 
 #include <string>
 #include <unordered_map>
-#include <winsock.h>
-
-struct EndPoint
-{
-	std::string address;
-	int port;
-	
-	EndPoint(std::string addr = "localhost", USHORT p = 10000);
-	std::string to_string() const;
-	static EndPoint from_string(const std::string& str);
-};
+#include <winsock2.h>
+#include "BlockingQueue.h"
 
 class Message
 {
 private:
 	std::unordered_map<std::string, std::string> _attributes;
-	struct sockaddr_in sa;
+
 public:
 	Message();
-	Message(EndPoint src, EndPoint dst);
+	Message(PSOCKADDR_IN from, PSOCKADDR_IN to);
+	void from(PSOCKADDR_IN from);
+	SOCKADDR_IN from() const;
+	void to(PSOCKADDR_IN to);
+	SOCKADDR_IN to() const;
+	void command(const std::string& cmd);
+	std::string command() const;
 };
+

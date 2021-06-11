@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <string>
 #include <mutex>
 #include <thread>
@@ -8,20 +9,28 @@
 #include "Message.h"
 #include "BlockingQueue.h"
 
-#define NUM_RUNNERS 3
+#define DEFAULT_POOL_SIZE 3
 
-/* Thread-safe test runner class */
-class TestRunner
+class TestMessage
+{
+
+};
+
+//	Test handler with thread pool
+class TestHandler
 {
 private:
-	static int _nextTestHandlerId;
-	static std::mutex _mtx;
-
-	int _myId;
-
-	void reportStatus(HandlerStatus);
+	std::atomic_bool _stop;
+	BlockingQueue<Message> _testQueue;
+	std::vector<std::thread> _runners;
+	void runner_thread();
 
 public:
-	TestRunner(BlockingQueue<Message>&);
-	void run();
+	// Prevent copying and assignment
+	TestHandler(const TestHandler&) = delete;
+	TestHandler& operator=(const TestHandler&) = delete;
+
+	TestHandler();
+
+	void addTest()
 };

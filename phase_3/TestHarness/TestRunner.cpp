@@ -1,11 +1,16 @@
 #include "TestRunner.h"
 #include "Message.h"
 
-int TestRunner::_nextTestHandlerId = 0;
-
-TestRunner::TestRunner(BlockingQueue<Message>& q)
+TestHandler::TestHandler()
 {
-	std::lock_guard<std::mutex> lock(_mtx);
-	_myId = _nextTestHandlerId++;
+	_stop = false;
 }
 
+void TestHandler::runner_thread()
+{
+	Message msg;
+	while (!_stop)
+	{
+		msg = _testQueue.dequeue();
+	}
+}
