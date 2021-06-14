@@ -1,35 +1,20 @@
 #pragma once
 
 #include <string>
-#include <mutex>
-#include <thread>
-#include <vector>
 #include "Logger.h"
-#include "Message.h"
-#include "BlockingQueue.h"
+#include "TestHandler.h"
 
 /* Thread-safe singleton class to run test harness */
 class TestEngine
 {
 private:
-	struct 
-
 	TestEngine();
 	~TestEngine();
 
 	static TestEngine* _instance;
 	static std::mutex _mtx;
 
-	BlockingQueue<Message> _msgQueue;		// Queue for messages received by test runners
-	BlockingQueue<std::string > _testQueue;	// Queue for test requests that runners wait on
-	std::thread _msgHandler;				// Message handler thread
-	std::thread _clientHandler;				// Client connection handler thread
-	std::vector<std::thread> _testHandlers;	// Test handler thread pool
-
-	void runMsgHandler();					// Message handler thread function
-	void runClientHandler();				// Client connection handler funciton
-	void runTestHandler(const int);			// Test handler thread function
-	void postMsg(Message);
+	TestHandler _testHandler;
 
 public:
 	// Prevent copying and assignment

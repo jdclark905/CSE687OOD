@@ -6,6 +6,7 @@
 std::mutex Logger::_coutMutex;
 std::mutex Logger::_fileMutex;
 std::string Logger::_fileName = "Harness_Logger.txt";
+std::string Logger::_timestampFormat = "%D %T";
 
 // Print to console
 void Logger::ToConsole(const std::string &msg)
@@ -33,6 +34,6 @@ std::string Logger::CurrentTimeStamp()
 	time(&now);
 	localtime_s(&timeinfo, &now);
 
-	strftime(buffer, 20, "%D %T", &timeinfo);
+	strftime(buffer, 20, _timestampFormat.c_str(), &timeinfo);
 	return (std::string)buffer;
 }

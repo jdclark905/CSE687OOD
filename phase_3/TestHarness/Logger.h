@@ -23,6 +23,7 @@ private:
 	static std::mutex _coutMutex;
 	static std::mutex _fileMutex;
 	static std::string _fileName;
+	static std::string _timestampFormat;
 
 public:
 	Logger();

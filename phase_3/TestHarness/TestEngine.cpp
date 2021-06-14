@@ -23,29 +23,14 @@ void TestEngine::runMsgHandler()
 
 }
 
-void TestEngine::runClientHandler()
-{
-	// Initialize listening socket
-
-	// Listen for connection requests
-
-
-}
-
 void TestEngine::runTestHandler(const int id)
 {
 	
 }
 
-void TestEngine::postMsg(const std::string &source, MessageType msgType, const std::string &body)
-{
-
-}
-
 void TestEngine::start()
 {
 	_msgHandler = std::thread(&runMsgHandler);
-	_clientHandler = std::thread(&runClientHandler);
 	for (int i = 0; i < 3; i++)
 	{
 		_testHandlers.push_back(std::thread(&runTestHandler, i));

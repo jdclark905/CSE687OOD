@@ -9,51 +9,86 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="TestEngine">
+      <UniqueIdentifier>{6c40c53a-d41b-4a6f-bc8a-a8c089f88606}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestEngine\Header Files">
+      <UniqueIdentifier>{9dc0ac57-b61f-4718-8d46-ac364a53b069}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TestEngine\Source Files">
+      <UniqueIdentifier>{a5da86e6-e19d-4836-8f7f-870964c2ff79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Comm">
+      <UniqueIdentifier>{f4a11afe-0e63-4c35-b869-2734e539b0cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Comm\Header Files">
+      <UniqueIdentifier>{f3d5c2ea-9e97-43a1-9e41-0077c4f10aab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Comm\Source Files">
+      <UniqueIdentifier>{c6b658bc-50de-49ae-a0ec-9da53dd4b142}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Logger">
+      <UniqueIdentifier>{6eab9299-a23c-4d18-9a86-78de5f72191e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Logger\Header Files">
+      <UniqueIdentifier>{5c0e6cc7-f24b-486f-964d-5befeb97fad8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Logger\Source Files">
+      <UniqueIdentifier>{e40a1a66-e2f3-4585-bd2d-50181094d0d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{8c5f73b5-bf22-409d-b476-bfd960815971}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Logger.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TestEngine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="UnitTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ITest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Message.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="TestEngine.h">
+      <Filter>TestEngine\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Logger\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BlockingQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TestRunner.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Comm.h">
+      <Filter>Comm\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Message.h">
+      <Filter>Comm\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestHandler.h">
+      <Filter>TestEngine\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Logger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestEngine.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>TestEngine\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="UnitTest.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestRunner.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Logger.cpp">
+      <Filter>Logger\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Message.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Comm\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestHandler.cpp">
+      <Filter>TestEngine\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Harness_Logger.txt" />
+    <Text Include="Harness_Logger.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
