@@ -14,6 +14,17 @@ void TestRunner::runner()
 		// Code to get test command from message and run test
 		// Get name of DLL, load and call test function, which
 		// will return a test result object
+		try
+		{
+			// load "xyz.dll"
+			// call "std::vector<std::string> getTestFunctions()" from dll
+			// for (std::string testfn : testFunctions) {}
+		}
+		catch (std::exception ex)
+		{
+
+		}
+		// log test result
 	}
 }
 

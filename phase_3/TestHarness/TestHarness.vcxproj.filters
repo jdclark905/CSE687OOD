@@ -41,12 +41,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="UnitTest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ITest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TestEngine.h">
       <Filter>TestEngine\Header Files</Filter>
     </ClInclude>
@@ -65,6 +59,12 @@
     <ClInclude Include="TestHandler.h">
       <Filter>TestEngine\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ITest.h">
+      <Filter>TestEngine\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitTest.h">
+      <Filter>TestEngine\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -73,9 +73,6 @@
     <ClCompile Include="TestEngine.cpp">
       <Filter>TestEngine\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UnitTest.cpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="Logger.cpp">
       <Filter>Logger\Source Files</Filter>
     </ClCompile>
@@ -83,6 +80,9 @@
       <Filter>Comm\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestHandler.cpp">
+      <Filter>TestEngine\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTest.cpp">
       <Filter>TestEngine\Source Files</Filter>
     </ClCompile>
   </ItemGroup>

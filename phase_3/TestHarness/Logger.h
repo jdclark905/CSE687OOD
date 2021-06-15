@@ -13,7 +13,7 @@ struct TestResult
 {
 	LogLevel level = PassFailOnly;
 	std::string message = "";
-	bool status;
+	bool pass;
 	std::string error = "";
 };
 
