@@ -1,4 +1,5 @@
 #include "TestHandler.h"
+#include "windows.h"
 
 /* TestRunner */
 TestRunner::TestRunner(TestHandler& testHandler, int id) : _testHandler(testHandler), _id(id), _running(false)
@@ -16,15 +17,18 @@ void TestRunner::runner()
 		// will return a test result object
 		try
 		{
-			// load "xyz.dll"
+			HINSTANCE hDLL = LoadLibraryA("xyz.dll");
+
+			// dll_handle = load_library "xyz.dll"
 			// call "std::vector<std::string> getTestFunctions()" from dll
 			// for (std::string testfn : testFunctions) {}
+			// log result
 		}
 		catch (std::exception ex)
 		{
 
 		}
-		// log test result
+		// free_library
 	}
 }
 
