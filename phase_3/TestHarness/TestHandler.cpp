@@ -1,68 +1,94 @@
 #include "TestHandler.h"
 #include "windows.h"
 
-/* TestRunner */
-TestRunner::TestRunner(TestHandler& testHandler, int id) : _testHandler(testHandler), _id(id), _running(false)
-{
-	_thread = new std::thread(&TestRunner::runner, this);
-}
+//////////////////////////////////////
+/*			TestHandler				*/
+//////////////////////////////////////
 
-void TestRunner::runner()
+void TestHandler::runner(int id)
 {
-	_running = true;
-	while (!_testHandler._shutdown)
+	std::string runnerIdStr = "Test runner " + std::to_string(id);
+	Logger::ToConsole(runnerIdStr + " started");
+
+	while (true)
 	{
-		// Code to get test command from message and run test
-		// Get name of DLL, load and call test function, which
-		// will return a test result object
-		try
-		{
-			HINSTANCE hDLL = LoadLibraryA("xyz.dll");
+		// Get next message from blocking queue
+		Message msg = _testQueue.dequeue();
+		Logger::ToConsole(runnerIdStr + " dequeued message:\n\t" + msg.toString());
 
-			// dll_handle = load_library "xyz.dll"
-			// call "std::vector<std::string> getTestFunctions()" from dll
-			// for (std::string testfn : testFunctions) {}
-			// log result
+		// If shutdown message, exit loop and stop thread
+		if (msg.type() == MSG_TYPE_SHUTDOWN)
+		{
+			// push shutdown message back onto queue for other threads
+			_testQueue.enqueue(msg);
+			break;
 		}
-		catch (std::exception ex)
+
+		// Check if message is test request
+		if (msg.type() == MSG_TYPE_TEST_REQ)
+		{
+			std::string dllName = msg.getValue(MSG_ATTR_NAME_BODY);
+			// will return a test result object
+			try
+			{
+				// dll_handle = load_library "xyz.dll"
+				// call "std::vector<std::string> getTestFunctions()" from dll
+				// for (std::string testfn : testFunctions) {}
+				// log result
+			}
+			catch (std::exception ex)
+			{
+
+			}
+			// free_library
+		}
+		// otherwise unknown to test handler
+		else
 		{
 
 		}
-		// free_library
 	}
+	Logger::ToConsole(runnerIdStr + " stopped");
 }
 
-void TestRunner::join()
+TestHandler::TestHandler(int poolSize) : _poolSize(poolSize)
 {
-	_thread->join();
+	Logger::ToConsole("Test handler starting with " + std::to_string(poolSize) + " runners");
 }
-
-/* TestHandler */
-TestHandler::TestHandler(int poolSize) : _poolSize(poolSize), _shutdown(false) {}
 
 TestHandler::~TestHandler()
 {
 	shutdown();
+	Logger::ToConsole("Test handler stopped");
 }
 
 void TestHandler::start()
 {
 	for (int i = 0; i < _poolSize; i++)
 	{
-		_runners.push_back(new TestRunner(*this, i));
+		_runnerThreads.push_back(new std::thread(&TestHandler::runner, this, i));
 	}
 }
 
 void TestHandler::shutdown()
 {
-	_shutdown = true;
-	for (TestRunner* runner : _runners)
+	_running = false;
+	Logger::ToConsole("Test handler shutting down");
+
+	// Shutdown runner threads by placing shutdown message in queue
+	Message msgShutdown;
+	msgShutdown.type("shutdown");
+	_testQueue.enqueue(msgShutdown);
+
+	// Wait for runner threads to exit (join) and cleanup
+	for (std::thread* th : _runnerThreads)
 	{
-		runner->join();
-		delete runner;
+		th->join();
+		delete th;
 	}
-	_runners.clear();
+	_runnerThreads.clear();
 	_testQueue.clear();
+	Logger::ToConsole("Test handler stopped");
 }
 
 void TestHandler::enqueue(Message msg)

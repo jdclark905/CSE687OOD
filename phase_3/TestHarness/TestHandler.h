@@ -10,35 +10,22 @@
 
 #define DEFAULT_POOL_SIZE 3
 
-class TestRunner
-{
-private:
-	TestHandler& _testHandler;
-	std::thread* _thread;
-	std::atomic<bool> _running;
-	const int _id;
-
-	void runner();
-
-public:
-	TestRunner(TestHandler& testHandler, int id);
-	void join();
-};
-
 class TestHandler
 {
 private:
 	int _poolSize;
+	bool _running;
 	BlockingQueue<Message> _testQueue;
-	std::vector<TestRunner*> _runners;
-	std::atomic<bool> _shutdown;
-	friend class TestRunner;
+	//std::vector<TestRunner*> _runners;
+	//friend class TestRunner;
+	std::vector<std::thread*> _runnerThreads;
+	void runner(int id);
 
 public:
 	TestHandler(int poolSize = DEFAULT_POOL_SIZE);
+	~TestHandler();
 	void start();
 	void shutdown();
 	void enqueue(Message msg);
-	bool running();
 };
 

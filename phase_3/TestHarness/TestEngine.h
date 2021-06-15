@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-#include "Logger.h"
 #include "TestHandler.h"
 
 /* Thread-safe singleton class to run test harness */
@@ -11,10 +9,10 @@ private:
 	TestEngine();
 	~TestEngine();
 
-	static TestEngine* _instance;
-	static std::mutex _mtx;
+	static TestEngine _instance;
 
 	TestHandler _testHandler;
+	bool _running;
 
 public:
 	// Prevent copying and assignment
@@ -22,8 +20,10 @@ public:
 	TestEngine& operator=(const TestEngine&) = delete;
 
 	// Get singleton instance (thread-safe)
-	static TestEngine* getInstance();
+	static TestEngine& getInstance();
 
 	// Start test engine
 	void start();
+	// Shutdown test engine
+	void shutdown();
 };
