@@ -1,6 +1,5 @@
 #pragma once
 
-#include <atomic>
 #include <string>
 #include <thread>
 #include <vector>
@@ -9,6 +8,7 @@
 #include "Message.h"
 
 #define DEFAULT_POOL_SIZE 3
+#define FN_GET_TEST_NAME "getTestName"
 
 class TestHandler
 {
@@ -16,10 +16,9 @@ private:
 	int _poolSize;
 	bool _running;
 	BlockingQueue<Message> _testQueue;
-	//std::vector<TestRunner*> _runners;
-	//friend class TestRunner;
 	std::vector<std::thread*> _runnerThreads;
 	void runner(int id);
+	int* sleepTime;
 
 public:
 	TestHandler(int poolSize = DEFAULT_POOL_SIZE);

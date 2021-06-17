@@ -23,6 +23,19 @@ TestEngine::~TestEngine()
 
 void TestEngine::start()
 {
+	// test DLL load functionality
+	Message msg;
+	msg.from(MsgAddress("localhost", 10000));
+	msg.to(MsgAddress("localhost", 10000));
+	msg.author("Matt");
+	msg.type(MSG_TYPE_TEST_REQ);
+	msg.body("MattLib - Copy.dll");
+	_testHandler.enqueue(msg);
+	msg.body("MattLib - Copy (2).dll");
+	_testHandler.enqueue(msg);
+	msg.body("MattLib - Copy (3).dll");
+	_testHandler.enqueue(msg);
+
 	_testHandler.start();
 	_running = true;
 }

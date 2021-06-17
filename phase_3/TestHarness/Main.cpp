@@ -1,15 +1,17 @@
 #include "TestEngine.h"
+#include <iostream>
 
 /********************/
 /* Main entry point */
 /********************/
 int main(int argc, char *argv[])
 {
+	srand(time(0));
+
 	TestEngine& testEngine = TestEngine::getInstance();
 	testEngine.start();
-	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+	getchar();
 	testEngine.shutdown();
-
 
 	system("pause");
 }

@@ -1,45 +1,58 @@
-class Comm
+#pragma once
+
+#include <Windows.h>
+#include <WinSock2.h>
+#include <WS2tcpip.h>
+#include "Logger.h"
+
+#define DEFAULT_PORT 10000
+
+class ConnectionListener
 {
+public:
+	// Constructor with port to listen on
+	ConnectionListener(u_short port = DEFAULT_PORT);
+	// Move constructor
+	ConnectionListener(ConnectionListener&&);
+	// Assignment operator
+	ConnectionListener& operator=(ConnectionListener&&);
+	// Destructor
+	~ConnectionListener();
+
+	template <typename CallableObject>
+	bool start(CallableObject& co);
+	void stop();
+
 private:
-	size_t _serverPort = 10000;
+	SOCKET _socket;
+	u_short _port;
+	struct addrinfo *_result = nullptr, *_ptr = nullptr, _hints;
+
+	bool bind();
+	bool listen();
+	void listenThread();
 };
 
-
-
-#include <vector>
-#include <string>
-
-
-// within DLL code, returns "testFunction1", "testFunction2"
-std::vector<std::string> getTestFunctions()
+class Comm
 {
-	std::vector<std::string> names;
-	names.push_back("testFunction1");
-	names.push_back("testFunction2");
-	return names;
-}
+public:
 
-// Tests function "a" in library
-bool testFunction1()
+private:
+	
+};
+
+template <typename CallableObject>
+bool ConnectionListener::start(CallableObject& co)
 {
-	if (a() == true)
+	if (!bind())
 	{
-		return true;
+		return false;
 	}
-	return false;
-}
 
-// Tests funciton "b" in library
-bool testFunction2()
-{
-	if (b(3) == 3)
+	if (!listen())
 	{
-		return true;
+		return false;
 	}
-	return false;
+
+	return true;
 }
-
-// Library functions
-bool a();
-
-int b(int _b);
