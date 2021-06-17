@@ -1,0 +1,6 @@
+﻿  pch.cpp
+  dllmain.cpp
+  MathLibrary.cpp
+  Generating Code...
+     Creating library D:\CSE-687 Object Oriented Design\DLL\MathLibrary\Debug\MathLibrary.lib and object D:\CSE-687 Object Oriented Design\DLL\MathLibrary\Debug\MathLibrary.exp
+  MathLibrary.vcxproj -> D:\CSE-687 Object Oriented Design\DLL\MathLibrary\Debug\MathLibrary.dll
