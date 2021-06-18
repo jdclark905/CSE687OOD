@@ -4,12 +4,19 @@
 #include "pch.h"
 #include "MattLib.h"
 
-MATTLIBRARY_API char* getTestName(int id)
+MATTLIBRARY_API std::vector<std::string> getTestNames()
 {
+	/*
 	if (id == 0){ return "testPass"; }
 	if (id == 1){ return "testFail"; }
 	if (id == 2){ return "testFailException"; }
 	return nullptr;
+	*/
+	std::vector<std::string> names;
+	names.push_back("testPass");
+	names.push_back("testFail");
+	names.push_back("testFailException");
+	return names;
 }
 
 // Waste a random amount of time and return true (pass)

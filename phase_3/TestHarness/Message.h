@@ -2,6 +2,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <WinSock2.h>
 
 #define MSG_ATTR_NAME_FROM "from"			// endpoint of message source
 #define MSG_ATTR_NAME_TO "to"				// endpoint of message destination
@@ -22,18 +23,18 @@ struct MsgAddress
 	std::string IPAddr;
 	size_t Port;
 	MsgAddress(std::string ipAddr = "", size_t port = 0);
-	std::string to_string();
-	static MsgAddress from_string(const std::string& str);
+	std::string toString();
+	static MsgAddress fromString(const std::string& str);
 };
 
 inline MsgAddress::MsgAddress(std::string ipAddr, size_t port) : IPAddr(ipAddr), Port(port) {}
 
-inline std::string MsgAddress::to_string()
+inline std::string MsgAddress::toString()
 {
 	return IPAddr + ":" + std::to_string(Port);
 }
 
-inline MsgAddress MsgAddress::from_string(const std::string& str)
+inline MsgAddress MsgAddress::fromString(const std::string& str)
 {
 	MsgAddress msgAddr;
 	size_t found = str.find_first_of(":");
@@ -56,6 +57,7 @@ class Message
 {
 private:
 	std::unordered_map<std::string, std::string> _attributes;
+	sockaddr_in _clientSockAddr;
 
 public:
 	Message();
@@ -81,5 +83,7 @@ public:
 	std::string type() const;
 	void body(const std::string&);
 	std::string body() const;
+	void clientSockAddr(const struct sockaddr_in&);
+	sockaddr_in clientSockAddr() const;
 };
 

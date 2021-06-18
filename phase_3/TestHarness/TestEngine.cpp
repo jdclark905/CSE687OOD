@@ -1,4 +1,5 @@
 #include "TestEngine.h"
+#include "Comm.h"
 #include "Logger.h"
 
 TestEngine TestEngine::_instance;
@@ -44,4 +45,24 @@ void TestEngine::shutdown()
 {
 	_testHandler.shutdown();
 	_running = false;
+}
+
+/////////////////////////////////////////////////
+//	Main entry point
+/////////////////////////////////////////////////
+int main(int argc, char *argv[])
+{
+	srand(time(0));
+	WSAData wsaData;
+	WSAStartup(MAKEWORD(2, 2), &wsaData);
+
+	TestEngine& testEngine = TestEngine::getInstance();
+	testEngine.start();
+	SocketListener sl;
+	sl.start();
+	getchar();
+	sl.stop();
+	testEngine.shutdown();
+
+	system("pause");
 }

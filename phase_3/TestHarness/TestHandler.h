@@ -8,7 +8,7 @@
 #include "Message.h"
 
 #define DEFAULT_POOL_SIZE 3
-#define FN_GET_TEST_NAME "getTestName"
+#define FN_GET_TEST_NAMES "getTestNames"
 
 class TestHandler
 {

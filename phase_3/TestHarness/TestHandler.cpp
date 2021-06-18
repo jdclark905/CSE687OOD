@@ -1,5 +1,8 @@
 #include "TestHandler.h"
-#include "windows.h"
+
+#ifndef _WINDOWS_
+#include <Windows.h>
+#endif
 
 //////////////////////////////////////
 /*			TestHandler				*/
@@ -7,10 +10,10 @@
 
 void TestHandler::runner(int id)
 {
-	typedef char* (__cdecl *getTestNameProc)(int);
+	typedef std::vector<std::string> (__stdcall *getTestNamesProc)(void);
 	typedef bool (__cdecl *testProc)(void);
 	HINSTANCE hDLL = nullptr;
-	getTestNameProc getTestName;
+	getTestNamesProc getTestNames;
 	testProc test;
 
 	std::string runnerIdStr = "Test runner " + std::to_string(id);
@@ -38,7 +41,7 @@ void TestHandler::runner(int id)
 		if (msg.type() == MSG_TYPE_TEST_REQ)
 		{
 			// Get name of DLL to test from message
-			std::string dllName = msg.getValue(MSG_ATTR_NAME_BODY);
+			std::string dllName = msg.body();
 			
 			// Load DLL
 			hDLL = LoadLibrary(dllName.c_str());
@@ -47,17 +50,16 @@ void TestHandler::runner(int id)
 				Logger::ToConsole(runnerIdStr + ": loaded DLL " + dllName);
 				
 				// Get pointer to "getTestName" function in DLL
-				getTestName = (getTestNameProc)GetProcAddress(hDLL, FN_GET_TEST_NAME);
-				if (getTestName != NULL)
+				getTestNames = (getTestNamesProc)GetProcAddress(hDLL, FN_GET_TEST_NAMES);
+				if (getTestNames != NULL)
 				{
-					Logger::ToConsole(runnerIdStr + ": DLL function " + FN_GET_TEST_NAME + " valid");
+					Logger::ToConsole(runnerIdStr + ": DLL function " + FN_GET_TEST_NAMES + " valid");
 					// Retrieve test function names and run
-					char* testName = "";
-					int id = 0;
-					while ((testName = getTestName(id)) && id < 10)
+					std::vector<std::string> testNames = getTestNames();
+					for (std::string testName : testNames)
 					{
-						Logger::ToConsole(runnerIdStr + ": test funciton " + std::to_string(id) + ": " + testName);
-						test = (testProc)GetProcAddress(hDLL, testName);
+						Logger::ToConsole(runnerIdStr + ": test funciton " + testName);
+						test = (testProc)GetProcAddress(hDLL, testName.c_str());
 						if (test)
 						{
 							try
@@ -74,12 +76,11 @@ void TestHandler::runner(int id)
 						{
 							Logger::ToConsole(runnerIdStr + ": error getting procaddress of " + testName);
 						}
-						id++;
 					};
 				}
 				else
 				{
-					Logger::ToConsole(runnerIdStr + ": DLL does not support " + FN_GET_TEST_NAME);
+					Logger::ToConsole(runnerIdStr + ": DLL does not support " + FN_GET_TEST_NAMES);
 				}
 
 				// free_library
