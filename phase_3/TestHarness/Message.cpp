@@ -42,7 +42,7 @@ std::string Message::toString() const
 	std::string retVal;
 	for (auto attrib : _attributes)
 	{
-		retVal += attrib.first + MSG_ATTR_VAL_DELIM + attrib.second + MSG_ATTR_DELIM;
+		retVal += attrib.first + MSG_CHAR_VAL_DELIM + attrib.second + MSG_CHAR_DELIM;
 	}
 	return retVal;
 }
@@ -187,4 +187,14 @@ std::string Message::body() const
 		retVal = _attributes.at(MSG_ATTR_NAME_BODY);
 	}
 	return retVal;
+}
+
+void Message::clientSocket(Socket* s)
+{
+	_clientSocket = s;
+}
+
+Socket* Message::clientSocket() const
+{
+	return _clientSocket;
 }

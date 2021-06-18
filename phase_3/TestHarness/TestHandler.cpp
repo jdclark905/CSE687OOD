@@ -1,4 +1,5 @@
 #include "TestHandler.h"
+#include "ITest.h"
 
 #ifndef _WINDOWS_
 #include <Windows.h>
@@ -10,10 +11,10 @@
 
 void TestHandler::runner(int id)
 {
-	typedef std::vector<std::string> (__stdcall *getTestNamesProc)(void);
+	typedef ITest* (__cdecl *GetTestObj)(void);
 	typedef bool (__cdecl *testProc)(void);
 	HINSTANCE hDLL = nullptr;
-	getTestNamesProc getTestNames;
+	GetTestObj getTestObj;
 	testProc test;
 
 	std::string runnerIdStr = "Test runner " + std::to_string(id);
@@ -50,37 +51,45 @@ void TestHandler::runner(int id)
 				Logger::ToConsole(runnerIdStr + ": loaded DLL " + dllName);
 				
 				// Get pointer to "getTestName" function in DLL
-				getTestNames = (getTestNamesProc)GetProcAddress(hDLL, FN_GET_TEST_NAMES);
-				if (getTestNames != NULL)
+				getTestObj = (GetTestObj)GetProcAddress(hDLL, FN_GET_TESTS);
+				if (getTestObj != NULL)
 				{
-					Logger::ToConsole(runnerIdStr + ": DLL function " + FN_GET_TEST_NAMES + " valid");
+					Logger::ToConsole(runnerIdStr + ": DLL function " + FN_GET_TESTS + " valid");
 					// Retrieve test function names and run
-					std::vector<std::string> testNames = getTestNames();
-					for (std::string testName : testNames)
+					ITest* testObjPrev = nullptr;
+					for (ITest* testObj = getTestObj(); testObj != nullptr; testObj = testObj->next())
 					{
-						Logger::ToConsole(runnerIdStr + ": test funciton " + testName);
+						if (testObjPrev != nullptr)
+						{
+							delete testObjPrev;
+						}
+						Logger::ToConsole(runnerIdStr + ": test funciton " + testObj->name());
+						/*
 						test = (testProc)GetProcAddress(hDLL, testName.c_str());
 						if (test)
-						{
+						{*/
 							try
 							{
-								bool result = test();
-								Logger::ToConsole(runnerIdStr + ": function " + testName + " returned " + (result ? "pass" : "fail"));
+								//bool result = test();
+								bool result = testObj->test();
+								Logger::ToConsole(runnerIdStr + ": function " + testObj->name() + " returned " + (result ? "pass" : "fail"));
 							}
 							catch (...)
 							{
-								Logger::ToConsole(runnerIdStr + ": exception while testing function " + testName);
+								Logger::ToConsole(runnerIdStr + ": exception while testing function " + testObj->name());
 							}
-						}
+						/*}
 						else
 						{
 							Logger::ToConsole(runnerIdStr + ": error getting procaddress of " + testName);
-						}
+						}*/
+							testObjPrev = testObj;
 					};
+
 				}
 				else
 				{
-					Logger::ToConsole(runnerIdStr + ": DLL does not support " + FN_GET_TEST_NAMES);
+					Logger::ToConsole(runnerIdStr + ": DLL does not support " + FN_GET_TESTS);
 				}
 
 				// free_library

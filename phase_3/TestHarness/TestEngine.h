@@ -1,6 +1,8 @@
 #pragma once
 
 #include "TestHandler.h"
+#include "ClientHandler.h"
+#include "Comm.h"
 
 /* Thread-safe singleton class to run test harness */
 class TestEngine
@@ -10,8 +12,8 @@ private:
 	~TestEngine();
 
 	static TestEngine _instance;
-
 	TestHandler _testHandler;
+	SocketListener _listener;
 	bool _running;
 
 public:

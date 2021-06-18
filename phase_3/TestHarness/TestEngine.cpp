@@ -1,5 +1,4 @@
 #include "TestEngine.h"
-#include "Comm.h"
 #include "Logger.h"
 
 TestEngine TestEngine::_instance;
@@ -11,7 +10,7 @@ TestEngine& TestEngine::getInstance()
 
 TestEngine::TestEngine() : _running(false)
 {
-
+	
 }
 
 TestEngine::~TestEngine()
@@ -24,10 +23,14 @@ TestEngine::~TestEngine()
 
 void TestEngine::start()
 {
+	// Start socket listener, initialize with test handler for enqueueing tests
+	ClientHandler* pCH = new ClientHandler(_testHandler);
+	_listener.start(*pCH);
+
 	// test DLL load functionality
 	Message msg;
-	msg.from(MsgAddress("localhost", 10000));
-	msg.to(MsgAddress("localhost", 10000));
+	msg.from(MsgAddress(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT));
+	msg.to(MsgAddress(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT));
 	msg.author("Matt");
 	msg.type(MSG_TYPE_TEST_REQ);
 	msg.body("MattLib - Copy.dll");
@@ -58,10 +61,7 @@ int main(int argc, char *argv[])
 
 	TestEngine& testEngine = TestEngine::getInstance();
 	testEngine.start();
-	SocketListener sl;
-	sl.start();
 	getchar();
-	sl.stop();
 	testEngine.shutdown();
 
 	system("pause");

@@ -9,6 +9,8 @@
 
 #define DEFAULT_POOL_SIZE 3
 #define FN_GET_TEST_NAMES "getTestNames"
+#define FN_GET_TEST_OBJ "getTestObj"
+#define FN_GET_TESTS "getTests"
 
 class TestHandler
 {
@@ -25,6 +27,7 @@ public:
 	~TestHandler();
 	void start();
 	void shutdown();
+	BlockingQueue<Message>* queue();
 	void enqueue(Message msg);
 };
 

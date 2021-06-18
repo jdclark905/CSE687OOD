@@ -2,7 +2,7 @@
 
 #include <string>
 #include <unordered_map>
-#include <WinSock2.h>
+#include "Comm.h"
 
 #define MSG_ATTR_NAME_FROM "from"			// endpoint of message source
 #define MSG_ATTR_NAME_TO "to"				// endpoint of message destination
@@ -11,8 +11,9 @@
 #define MSG_ATTR_NAME_TYPE "type"			// message type (test request, test response, shutdown, etc)
 #define MSG_ATTR_NAME_BODY "body"				// for test request/response, name of DLL
 
-#define MSG_ATTR_DELIM ";"		// delimeter between attribute entries
-#define MSG_ATTR_VAL_DELIM "="	// delimeter between attribute key and value
+#define MSG_CHAR_DELIM ";"		// delimeter between attribute entries
+#define MSG_CHAR_VAL_DELIM "="	// delimeter between attribute key and value
+#define MSG_CHAR_TERM '\n'
 
 #define MSG_TYPE_TEST_REQ "test request"
 #define MSG_TYPE_TEST_RESP "test response"
@@ -57,7 +58,7 @@ class Message
 {
 private:
 	std::unordered_map<std::string, std::string> _attributes;
-	sockaddr_in _clientSockAddr;
+	Socket* _clientSocket;
 
 public:
 	Message();
@@ -67,8 +68,8 @@ public:
 	std::string getValue(const std::string& key) const;
 	bool hasKey(const std::string& key) const;
 	std::string toString() const;
-	static std::vector<std::string> splitAttributes(const std::string& src, const char* delim = MSG_ATTR_DELIM);
-	static std::pair <std::string, std::string> splitKeyValue(const std::string&, const char* delim = MSG_ATTR_VAL_DELIM);
+	static std::vector<std::string> splitAttributes(const std::string& src, const char* delim = MSG_CHAR_DELIM);
+	static std::pair <std::string, std::string> splitKeyValue(const std::string&, const char* delim = MSG_CHAR_VAL_DELIM);
 	static Message fromString(const std::string&);
 
 	void from(MsgAddress);
@@ -83,7 +84,7 @@ public:
 	std::string type() const;
 	void body(const std::string&);
 	std::string body() const;
-	void clientSockAddr(const struct sockaddr_in&);
-	sockaddr_in clientSockAddr() const;
+	void clientSocket(Socket*);
+	Socket* clientSocket() const;
 };
 

@@ -4,11 +4,14 @@
 #include <WS2tcpip.h>
 #include <atomic>
 #include <thread>
-#include "Logger.h"
+#include <unordered_map>
+#include "BlockingQueue.h"
 #include "Message.h"
+#include "Logger.h"
 #pragma comment (lib, "ws2_32.lib")
 
-#define DEFAULT_PORT 10000
+#define DEFAULT_LISTEN_IP "127.0.0.1"
+#define DEFAULT_LISTEN_PORT 10000
 
 class Socket
 {
@@ -19,7 +22,7 @@ public:
 	Socket(const Socket& s) = delete;
 	Socket& operator=(const Socket& s) = delete;
 
-	Socket();
+	Socket(const std::string& ip = DEFAULT_LISTEN_IP, u_short port = DEFAULT_LISTEN_PORT);
 	Socket(SOCKET);
 	Socket(Socket&& s);
 	operator SOCKET() { return _socket; }
@@ -44,7 +47,8 @@ public:
 protected:
 	WSADATA _wsaData;
 	SOCKET _socket;
-	struct addrinfo *_result = NULL, *_ptr = NULL, _hints;
+	std::string _ip;
+	u_short _port;
 	int iResult;
 };
 
@@ -52,7 +56,7 @@ class SocketListener : public Socket
 {
 public:
 	// Constructor with port to listen on
-	SocketListener(u_short port = DEFAULT_PORT);
+	SocketListener(const std::string& ip = DEFAULT_LISTEN_IP, u_short port = DEFAULT_LISTEN_PORT);
 	// Move constructor
 	SocketListener(SocketListener&&);
 	// Assignment operator
@@ -60,15 +64,45 @@ public:
 	// Destructor
 	~SocketListener();
 
-	bool start();
+	template <typename CallableObject>
+	bool start(CallableObject& co);
 	void stop();
+	BlockingQueue<Message>* responseQueue();
 
 private:
-	u_short _port;
+	BlockingQueue<Message> _responseQueue;
 	std::atomic<bool> _stop = false;
-
 	bool bind();
 	bool listen();
 	Socket accept();
 	
 };
+
+template <typename CallableObject>
+bool SocketListener::start(CallableObject& co)
+{
+	if (!bind()) return false;
+	if (!listen()) return false;
+
+	// Listen on separate thread so it doesn't block main thread
+	std::thread listenThread([&]()
+	{
+		Logger::ToConsole("SocketListener waiting for connections");
+		while (!_stop.load())
+		{
+			// Accept client connection
+			Socket clientSocket = accept();
+			if (!clientSocket.validState())
+			{
+				continue;
+			}
+			
+			// Start client handler in new thread
+			std::thread clientThread(co, std::move(clientSocket));
+			clientThread.detach();
+		}
+		Logger::ToConsole("SocketListener listen thread stopping");
+	});
+	listenThread.detach();
+	return true;
+}

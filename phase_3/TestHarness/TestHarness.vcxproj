@@ -86,17 +86,17 @@
     <ClInclude Include="Logger.h" />
     <ClInclude Include="Comm.h" />
     <ClInclude Include="Message.h" />
+    <ClInclude Include="ClientHandler.h" />
     <ClInclude Include="TestEngine.h" />
     <ClInclude Include="TestHandler.h" />
-    <ClInclude Include="UnitTest.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Comm.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="Message.cpp" />
+    <ClCompile Include="ClientHandler.cpp" />
     <ClCompile Include="TestEngine.cpp" />
     <ClCompile Include="TestHandler.cpp" />
-    <ClCompile Include="UnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Harness_Logger.txt" />

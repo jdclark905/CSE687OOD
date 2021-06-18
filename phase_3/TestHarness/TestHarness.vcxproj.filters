@@ -49,16 +49,16 @@
     <ClInclude Include="Comm.h">
       <Filter>Comm\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Message.h">
-      <Filter>Comm\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TestHandler.h">
       <Filter>TestEngine\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ITest.h">
       <Filter>TestEngine\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UnitTest.h">
+    <ClInclude Include="Message.h">
+      <Filter>TestEngine\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientHandler.h">
       <Filter>TestEngine\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -69,17 +69,17 @@
     <ClCompile Include="Logger.cpp">
       <Filter>Logger\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Message.cpp">
-      <Filter>Comm\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TestHandler.cpp">
-      <Filter>TestEngine\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UnitTest.cpp">
       <Filter>TestEngine\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Comm.cpp">
       <Filter>Comm\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Message.cpp">
+      <Filter>TestEngine\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientHandler.cpp">
+      <Filter>TestEngine\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

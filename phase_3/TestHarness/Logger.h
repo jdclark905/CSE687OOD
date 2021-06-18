@@ -3,20 +3,6 @@
 #include <string>
 #include <mutex>
 
-enum LogLevel {
-	PassFailOnly,
-	PassFailMessage,
-	PassFailMessageWithTimestamp
-};
-
-struct TestResult
-{
-	LogLevel level = PassFailOnly;
-	std::string message = "";
-	bool pass;
-	std::string error = "";
-};
-
 class Logger
 {
 private:
