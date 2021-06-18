@@ -1,0 +1,7 @@
+﻿  pch.cpp
+  dllmain.cpp
+  MathLibrary.cpp
+D:\CSE-687 Object Oriented Design\DLL\MathLibrary\MathLibrary\MathLibrary.cpp(98,24): warning C4834: discarding return value of function with 'nodiscard' attribute
+  Generating Code...
+     Creating library D:\CSE-687 Object Oriented Design\DLL\MathLibrary\Debug\MathLibrary.lib and object D:\CSE-687 Object Oriented Design\DLL\MathLibrary\Debug\MathLibrary.exp
+  MathLibrary.vcxproj -> D:\CSE-687 Object Oriented Design\DLL\MathLibrary\Debug\MathLibrary.dll
