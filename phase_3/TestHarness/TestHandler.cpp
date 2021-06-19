@@ -9,13 +9,61 @@
 /*			TestHandler				*/
 //////////////////////////////////////
 
+TestHandler::TestHandler(BlockingQueue<Message>& requestQueue, BlockingQueue<Message>& responseQueue, int poolSize) : _requestQueue(requestQueue), _responseQueue(responseQueue), _poolSize(poolSize)
+{
+	Logger::ToConsole("Test handler starting with " + std::to_string(poolSize) + " runners");
+	sleepTime = new int[_poolSize];
+}
+
+TestHandler::~TestHandler()
+{
+	shutdown();
+	delete[] sleepTime;
+	Logger::ToConsole("Test handler stopped");
+}
+
+void TestHandler::start()
+{
+	for (int i = 0; i < _poolSize; i++)
+	{
+		sleepTime[i] = rand() % 20 + 10;
+		_runnerThreads.push_back(new std::thread(&TestHandler::runner, this, i));
+	}
+}
+
+void TestHandler::shutdown()
+{
+	_running = false;
+	Logger::ToConsole("Test handler shutting down");
+
+	// Shutdown runner threads by placing shutdown message in queue
+	Message msgShutdown;
+	msgShutdown.type("shutdown");
+	_requestQueue.enqueue(msgShutdown);
+	
+	// Wait for runner threads to exit (join) and cleanup
+	for (std::thread* th : _runnerThreads)
+	{
+		th->join();
+		delete th;
+	}
+	_runnerThreads.clear();
+	_requestQueue.clear();
+	Logger::ToConsole("Test handler stopped");
+}
+
+void TestHandler::enqueue(Message msg)
+{
+	_requestQueue.enqueue(msg);
+}
+
 void TestHandler::runner(int id)
 {
 	typedef ITest* (__cdecl *GetTestObj)(void);
 	typedef bool (__cdecl *testProc)(void);
 	HINSTANCE hDLL = nullptr;
 	GetTestObj getTestObj;
-	testProc test;
+	//testProc test;
 
 	std::string runnerIdStr = "Test runner " + std::to_string(id);
 	Logger::ToConsole(runnerIdStr + ": starting");
@@ -27,14 +75,14 @@ void TestHandler::runner(int id)
 		Logger::ToConsole(runnerIdStr + ": ready");
 
 		// Get next message from blocking queue
-		Message msg = _testQueue.dequeue();
+		Message msg = _requestQueue.dequeue();
 		Logger::ToConsole(runnerIdStr + ": dequeued message: " + msg.toString());
 
 		// If shutdown message, exit loop and stop thread
 		if (msg.type() == MSG_TYPE_SHUTDOWN)
 		{
 			// push shutdown message back onto queue for other threads
-			_testQueue.enqueue(msg);
+			_requestQueue.enqueue(msg);
 			break;
 		}
 
@@ -109,52 +157,4 @@ void TestHandler::runner(int id)
 		sleepTime[id] = rand() % 20 + 10;
 	}
 	Logger::ToConsole(runnerIdStr + ": stopped");
-}
-
-TestHandler::TestHandler(int poolSize) : _poolSize(poolSize)
-{
-	Logger::ToConsole("Test handler starting with " + std::to_string(poolSize) + " runners");
-	sleepTime = new int[_poolSize];
-}
-
-TestHandler::~TestHandler()
-{
-	shutdown();
-	delete[] sleepTime;
-	Logger::ToConsole("Test handler stopped");
-}
-
-void TestHandler::start()
-{
-	for (int i = 0; i < _poolSize; i++)
-	{
-		sleepTime[i] = rand() % 20 + 10;
-		_runnerThreads.push_back(new std::thread(&TestHandler::runner, this, i));
-	}
-}
-
-void TestHandler::shutdown()
-{
-	_running = false;
-	Logger::ToConsole("Test handler shutting down");
-
-	// Shutdown runner threads by placing shutdown message in queue
-	Message msgShutdown;
-	msgShutdown.type("shutdown");
-	_testQueue.enqueue(msgShutdown);
-	
-	// Wait for runner threads to exit (join) and cleanup
-	for (std::thread* th : _runnerThreads)
-	{
-		th->join();
-		delete th;
-	}
-	_runnerThreads.clear();
-	_testQueue.clear();
-	Logger::ToConsole("Test handler stopped");
-}
-
-void TestHandler::enqueue(Message msg)
-{
-	_testQueue.enqueue(msg);
 }

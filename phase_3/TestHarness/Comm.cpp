@@ -4,15 +4,14 @@
 // Socket class
 /////////////////////////////////////////////////////////////////////////////
 
-Socket::Socket(const std::string& ip, u_short port) : _ip(ip), _port(port)
+Socket::Socket()
 {
-	_socket = INVALID_SOCKET;
 
 }
 
-Socket::Socket(SOCKET sock) : Socket()
+Socket::Socket(SOCKET sock) : _socket(sock)
 {
-	_socket = sock;
+	
 }
 
 Socket::Socket(Socket&& s)
@@ -165,46 +164,106 @@ bool Socket::waitForData(size_t timeToWait, size_t timeToCheck)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// SocketListener
+// ClientSocket
 /////////////////////////////////////////////////////////////////////////////
 
-SocketListener::SocketListener(const std::string& ip, u_short port) : Socket(ip, port)
+ClientSocket::ClientSocket() : Socket()
 {
-	Logger::ToConsole("SocketListener created on port " + std::to_string(port));
+
 }
 
-SocketListener::SocketListener(SocketListener&& sl)
+ClientSocket::ClientSocket(ClientSocket&& s) : Socket()
+{
+	_socket = s._socket;
+	s._socket = INVALID_SOCKET;
+}
+
+ClientSocket& ClientSocket::operator=(ClientSocket&& s)
+{
+	if (this != &s)
+	{
+		_socket = s._socket;
+		s._socket = INVALID_SOCKET;
+	}
+	return *this;
+}
+
+ClientSocket::~ClientSocket()
+{
+
+}
+
+bool ClientSocket::connect(const std::string& ip, u_short port)
+{
+	// Create socket for connection
+	_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (_socket == INVALID_SOCKET) {
+		int error = WSAGetLastError();
+		Logger::ToConsole("ClientSocket: create socket failed: " + std::to_string(error));
+		return false;
+	}
+
+	Logger::ToConsole("ClientSocket: create socket successful");
+
+	struct sockaddr_in saddr;
+	saddr.sin_family = AF_INET;
+	saddr.sin_port = htons(port);
+	inet_pton(AF_INET, ip.c_str(), &saddr.sin_addr);
+
+	// Connect socket
+	iResult = ::connect(_socket, (sockaddr*)&saddr, sizeof(saddr));
+	if (iResult == SOCKET_ERROR) {
+		int error = WSAGetLastError();
+		Logger::ToConsole("ClientSocket: connect socket failed: " + std::to_string(error));
+		_socket = INVALID_SOCKET;
+		return false;
+	}
+
+	Logger::ToConsole("ClientSocket: connect successful");
+	return true;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// ServerSocket
+/////////////////////////////////////////////////////////////////////////////
+
+ServerSocket::ServerSocket(const std::string& ip, u_short port) : Socket(), _ip(ip), _port(port)
+{
+	Logger::ToConsole("ServerSocket starting up on " + ip + ":" + std::to_string(port));
+}
+
+ServerSocket::ServerSocket(ServerSocket&& sl) : Socket()
 {
 	_socket = sl._socket;
 	sl._socket = INVALID_SOCKET;
 }
 
-SocketListener& SocketListener::operator=(SocketListener&& sl)
+ServerSocket& ServerSocket::operator=(ServerSocket&& s)
 {
-	if (this != &sl)
+	if (this != &s)
 	{
-		_socket = sl._socket;
-		sl._socket = INVALID_SOCKET;
+		_socket = s._socket;
+		s._socket = INVALID_SOCKET;
 	}
 	return *this;
 }
 
-SocketListener::~SocketListener()
+ServerSocket::~ServerSocket()
 {
 
 }
 
-bool SocketListener::bind()
+bool ServerSocket::bind()
 {
-	Logger::ToConsole("SocketListener binding");
-
-	// Create a SOCKET for connecting to server
+	// Create a socket for listening
 	_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (_socket == INVALID_SOCKET) {
 		int error = WSAGetLastError();
-		Logger::ToConsole("SocketListener failed to create listen socket: " + std::to_string(error));
+		Logger::ToConsole("ServerSocket: create socket failed: " + std::to_string(error));
+		return false;
 	}
-	Logger::ToConsole("SocketListener created listen socket");
+
+	Logger::ToConsole("ServerSocket: create socket successful");
 
 	struct sockaddr_in saddr;
 	saddr.sin_family = AF_INET;
@@ -215,66 +274,55 @@ bool SocketListener::bind()
 	iResult = ::bind(_socket, (sockaddr*)&saddr, sizeof(saddr));
 	if (iResult == SOCKET_ERROR) {
 		int error = WSAGetLastError();
-		Logger::ToConsole("SocketListener failed to bind socket: " + std::to_string(error));
+		Logger::ToConsole("ServerSocket: bind listen socket failed: " + std::to_string(error));
 		_socket = INVALID_SOCKET;
+		return false;
 	}
-	if (_socket != INVALID_SOCKET)
-	{
-		Logger::ToConsole("SocketListener listen socket bound to " + _ip + ":" + std::to_string(_port));
-		return true;
-	}
-	return false;
+
+	Logger::ToConsole("ServerSocket: bind listen socket successful");
+	return true;
 }
 
-bool SocketListener::listen()
+bool ServerSocket::listen()
 {
 	iResult = ::listen(_socket, SOMAXCONN);
 	if (iResult == SOCKET_ERROR)
 	{
 		int error = WSAGetLastError();
-		Logger::ToConsole("SocketListener listen failed");
+		Logger::ToConsole("ServerSocket: listen failed");
 		_socket = INVALID_SOCKET;
 		return false;
 	}
-	Logger::ToConsole("SocketListener listen successful");
+	Logger::ToConsole("ServerSocket: listen successful");
 	return true;
 }
 
 // Called by listen thread to accept client connections
-Socket SocketListener::accept()
+Socket ServerSocket::accept()
 {
 	struct sockaddr_in remaddr;
 	socklen_t remaddr_len = sizeof(remaddr);
-	char host[NI_MAXHOST];
-	char port[NI_MAXSERV];
-	ZeroMemory(host, NI_MAXHOST);
-	ZeroMemory(port, NI_MAXSERV);
 	std::string hostStr = "", portStr = "";
 	SOCKET s = ::accept(_socket, (struct sockaddr*)&remaddr, &remaddr_len);
 	Socket clientSocket = s;
 	if (!clientSocket.validState())
 	{
 		int error = WSAGetLastError();
-		Logger::ToConsole("SocketListener accept failed: " + std::to_string(error));
+		Logger::ToConsole("ServerSocket accept failed: " + std::to_string(error));
 		stop();
 	}
 	else
 	{
-		if (getnameinfo((sockaddr*)&remaddr, remaddr_len, host, NI_MAXHOST, port, NI_MAXSERV, 0) == 0)
-		{
-			hostStr.assign(host);
-			portStr.assign(port);
-		}
-		else
-		{
-
-		}
-		Logger::ToConsole("SocketListener accepted connection from " + hostStr + ":" + portStr);
+		char host[16];
+		ZeroMemory(host, sizeof(host));
+		std::string ip = inet_ntop(AF_INET, &remaddr.sin_addr, host, 16);
+		std::string remPort = std::to_string(ntohs(remaddr.sin_port));
+		Logger::ToConsole("ServerSocket accepted connection from " + ip + ":" + remPort);
 	}
 	return clientSocket;
 }
 
-void SocketListener::stop()
+void ServerSocket::stop()
 {
 	_stop.exchange(true);
 }

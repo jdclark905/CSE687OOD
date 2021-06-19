@@ -22,13 +22,13 @@
 struct MsgAddress
 {
 	std::string IPAddr;
-	size_t Port;
-	MsgAddress(std::string ipAddr = "", size_t port = 0);
+	u_short Port;
+	MsgAddress(std::string ipAddr = "", u_short port = 0);
 	std::string toString();
 	static MsgAddress fromString(const std::string& str);
 };
 
-inline MsgAddress::MsgAddress(std::string ipAddr, size_t port) : IPAddr(ipAddr), Port(port) {}
+inline MsgAddress::MsgAddress(std::string ipAddr, u_short port) : IPAddr(ipAddr), Port(port) {}
 
 inline std::string MsgAddress::toString()
 {

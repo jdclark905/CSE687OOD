@@ -8,7 +8,7 @@ TestEngine& TestEngine::getInstance()
 	return _instance;
 }
 
-TestEngine::TestEngine() : _running(false)
+TestEngine::TestEngine() : _running(false), _testHandler(_requestQueue, _responseQueue), _clientHandler(_requestQueue, _responseQueue)
 {
 	
 }
@@ -23,10 +23,6 @@ TestEngine::~TestEngine()
 
 void TestEngine::start()
 {
-	// Start socket listener, initialize with test handler for enqueueing tests
-	ClientHandler* pCH = new ClientHandler(_testHandler);
-	_listener.start(*pCH);
-
 	// test DLL load functionality
 	Message msg;
 	msg.from(MsgAddress(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT));
@@ -41,6 +37,7 @@ void TestEngine::start()
 	_testHandler.enqueue(msg);
 
 	_testHandler.start();
+	_clientHandler.start();
 	_running = true;
 }
 

@@ -2,7 +2,6 @@
 
 #include "TestHandler.h"
 #include "ClientHandler.h"
-#include "Comm.h"
 
 /* Thread-safe singleton class to run test harness */
 class TestEngine
@@ -12,8 +11,10 @@ private:
 	~TestEngine();
 
 	static TestEngine _instance;
+	BlockingQueue<Message> _requestQueue;
+	BlockingQueue<Message> _responseQueue;
 	TestHandler _testHandler;
-	SocketListener _listener;
+	ClientHandler _clientHandler;
 	bool _running;
 
 public:

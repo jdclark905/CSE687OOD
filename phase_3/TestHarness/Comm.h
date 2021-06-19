@@ -4,9 +4,7 @@
 #include <WS2tcpip.h>
 #include <atomic>
 #include <thread>
-#include <unordered_map>
 #include "BlockingQueue.h"
-#include "Message.h"
 #include "Logger.h"
 #pragma comment (lib, "ws2_32.lib")
 
@@ -22,11 +20,17 @@ public:
 	Socket(const Socket& s) = delete;
 	Socket& operator=(const Socket& s) = delete;
 
-	Socket(const std::string& ip = DEFAULT_LISTEN_IP, u_short port = DEFAULT_LISTEN_PORT);
+	// Default constructor
+	Socket();
+	// Promotion constructor
 	Socket(SOCKET);
+	// Move constructor
 	Socket(Socket&& s);
+	// Conversion operator
 	operator SOCKET() { return _socket; }
+	// Move assignment operator
 	Socket& operator=(Socket&& s);
+	// Destructor
 	virtual ~Socket();
 
 	bool send(size_t bytes, byte* buffer);
@@ -47,31 +51,44 @@ public:
 protected:
 	WSADATA _wsaData;
 	SOCKET _socket;
-	std::string _ip;
-	u_short _port;
 	int iResult;
 };
 
-class SocketListener : public Socket
+class ClientSocket : public Socket
+{
+public:
+	// Prevent copy construction and assignment
+	ClientSocket(const ClientSocket&) = delete;
+	ClientSocket& operator=(const ClientSocket&) = delete;
+
+	ClientSocket();
+	ClientSocket(ClientSocket&&);
+	ClientSocket& operator=(ClientSocket&&);
+	virtual ~ClientSocket();
+
+	bool connect(const std::string& ip, u_short port);
+};
+
+class ServerSocket : public Socket
 {
 public:
 	// Constructor with port to listen on
-	SocketListener(const std::string& ip = DEFAULT_LISTEN_IP, u_short port = DEFAULT_LISTEN_PORT);
+	ServerSocket(const std::string& ip = DEFAULT_LISTEN_IP, u_short port = DEFAULT_LISTEN_PORT);
 	// Move constructor
-	SocketListener(SocketListener&&);
+	ServerSocket(ServerSocket&&);
 	// Assignment operator
-	SocketListener& operator=(SocketListener&&);
+	ServerSocket& operator=(ServerSocket&&);
 	// Destructor
-	~SocketListener();
+	virtual ~ServerSocket();
 
 	template <typename CallableObject>
 	bool start(CallableObject& co);
 	void stop();
-	BlockingQueue<Message>* responseQueue();
 
 private:
-	BlockingQueue<Message> _responseQueue;
 	std::atomic<bool> _stop = false;
+	std::string _ip;
+	u_short _port;
 	bool bind();
 	bool listen();
 	Socket accept();
@@ -79,7 +96,7 @@ private:
 };
 
 template <typename CallableObject>
-bool SocketListener::start(CallableObject& co)
+bool ServerSocket::start(CallableObject& co)
 {
 	if (!bind()) return false;
 	if (!listen()) return false;
@@ -87,7 +104,7 @@ bool SocketListener::start(CallableObject& co)
 	// Listen on separate thread so it doesn't block main thread
 	std::thread listenThread([&]()
 	{
-		Logger::ToConsole("SocketListener waiting for connections");
+		Logger::ToConsole("ServerSocket waiting for connections");
 		while (!_stop.load())
 		{
 			// Accept client connection
@@ -101,7 +118,7 @@ bool SocketListener::start(CallableObject& co)
 			std::thread clientThread(co, std::move(clientSocket));
 			clientThread.detach();
 		}
-		Logger::ToConsole("SocketListener listen thread stopping");
+		Logger::ToConsole("ServerSocket listen thread stopping");
 	});
 	listenThread.detach();
 	return true;
