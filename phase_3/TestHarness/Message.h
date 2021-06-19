@@ -3,13 +3,19 @@
 #include <string>
 #include <unordered_map>
 
-#define MSG_ATTR_FROM "from"
-#define MSG_ATTR_TO "to"
-#define MSG_ATTR_TIMESTAMP "timestamp"
-#define MSG_ATTR_AUTHOR "author"
-#define MSG_ATTR_TYPE "type"
+#define MSG_ATTR_NAME_FROM "from"			// endpoint of message source
+#define MSG_ATTR_NAME_TO "to"				// endpoint of message destination
+#define MSG_ATTR_NAME_TIMESTAMP "timestamp"	// timestamp of message
+#define MSG_ATTR_NAME_AUTHOR "author"		// message author (client, test handler, etc)
+#define MSG_ATTR_NAME_TYPE "type"			// message type (test request, test response, shutdown, etc)
+#define MSG_ATTR_NAME_BODY "body"				// for test request/response, name of DLL
+
 #define MSG_ATTR_DELIM ";"		// delimeter between attribute entries
 #define MSG_ATTR_VAL_DELIM "="	// delimeter between attribute key and value
+
+#define MSG_TYPE_TEST_REQ "test request"
+#define MSG_TYPE_TEST_RESP "test response"
+#define MSG_TYPE_SHUTDOWN "shutdown"
 
 struct MsgAddress
 {
@@ -56,10 +62,11 @@ public:
 	Message(MsgAddress from, MsgAddress to);
 
 	void setAttribute(const std::string& key, const std::string& value);
+	std::string getValue(const std::string& key) const;
 	bool hasKey(const std::string& key) const;
 	std::string toString() const;
 	static std::vector<std::string> splitAttributes(const std::string& src, const char* delim = MSG_ATTR_DELIM);
-	static std::pair <std::string, std::string> getKeyValue(const std::string&, const char* delim = MSG_ATTR_VAL_DELIM);
+	static std::pair <std::string, std::string> splitKeyValue(const std::string&, const char* delim = MSG_ATTR_VAL_DELIM);
 	static Message fromString(const std::string&);
 
 	void from(MsgAddress);
@@ -72,5 +79,7 @@ public:
 	std::string author() const;
 	void type(const std::string&);
 	std::string type() const;
+	void body(const std::string&);
+	std::string body() const;
 };
 

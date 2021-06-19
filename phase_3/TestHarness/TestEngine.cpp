@@ -1,38 +1,47 @@
 #include "TestEngine.h"
 #include "Logger.h"
 
-TestEngine* TestEngine::_instance = nullptr;
-std::mutex TestEngine::_mtx;
+TestEngine TestEngine::_instance;
 
-TestEngine::TestEngine() : _msgQueue(), _testQueue(), _testHandlers()
+TestEngine& TestEngine::getInstance()
 {
-}
-
-TestEngine* TestEngine::getInstance()
-{
-	std::lock_guard<std::mutex> lock(_mtx);
-	if (_instance == nullptr)
-	{
-		_instance = new TestEngine();
-	}
 	return _instance;
 }
 
-void TestEngine::runMsgHandler()
+TestEngine::TestEngine() : _running(false)
 {
 
 }
 
-void TestEngine::runTestHandler(const int id)
+TestEngine::~TestEngine()
 {
-	
+	if (_running)
+	{
+		shutdown();
+	}
 }
 
 void TestEngine::start()
 {
-	_msgHandler = std::thread(&runMsgHandler);
-	for (int i = 0; i < 3; i++)
-	{
-		_testHandlers.push_back(std::thread(&runTestHandler, i));
-	}
+	// test DLL load functionality
+	Message msg;
+	msg.from(MsgAddress("localhost", 10000));
+	msg.to(MsgAddress("localhost", 10000));
+	msg.author("Matt");
+	msg.type(MSG_TYPE_TEST_REQ);
+	msg.body("MattLib - Copy.dll");
+	_testHandler.enqueue(msg);
+	msg.body("MattLib - Copy (2).dll");
+	_testHandler.enqueue(msg);
+	msg.body("MattLib - Copy (3).dll");
+	_testHandler.enqueue(msg);
+
+	_testHandler.start();
+	_running = true;
+}
+
+void TestEngine::shutdown()
+{
+	_testHandler.shutdown();
+	_running = false;
 }

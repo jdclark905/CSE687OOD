@@ -85,6 +85,9 @@
     <ClCompile Include="UnitTest.cpp">
       <Filter>TestEngine\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Comm.cpp">
+      <Filter>Comm\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Harness_Logger.txt">
