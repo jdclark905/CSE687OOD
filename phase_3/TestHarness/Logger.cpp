@@ -6,7 +6,7 @@
 std::mutex Logger::_coutMutex;
 std::mutex Logger::_fileMutex;
 std::string Logger::_fileName = "Harness_Logger.txt";
-std::string Logger::_timestampFormat = "%D %T";
+std::string Logger::_timestampFormat = "%m/%d/%y %H:%M:%S";
 
 // Print to console
 void Logger::ToConsole(const std::string &msg)
@@ -27,13 +27,18 @@ void Logger::ToFile(const std::string &msg)
 // Get current timestamp, formatted as 'MM/DD/YY HH:MM:SS'
 std::string Logger::CurrentTimeStamp()
 {
-	time_t now;
+	time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	struct tm timeinfo;
 	char buffer[20];
-
-	time(&now);
+	
 	localtime_s(&timeinfo, &now);
 
-	strftime(buffer, 20, _timestampFormat.c_str(), &timeinfo);
-	return (std::string)buffer;
+	if (strftime(buffer, 20, _timestampFormat.c_str(), &timeinfo))
+	{
+		return std::string{ buffer };
+	}
+	else
+	{
+		return "Timestamp error";
+	}
 }

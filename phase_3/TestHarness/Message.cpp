@@ -5,8 +5,8 @@ Message::Message() {}
 
 Message::Message(MsgAddress from, MsgAddress to)
 {
-	_attributes[MSG_ATTR_NAME_FROM] = from.to_string();
-	_attributes[MSG_ATTR_NAME_TO] = to.to_string();
+	_attributes[MSG_ATTR_NAME_FROM] = from.toString();
+	_attributes[MSG_ATTR_NAME_TO] = to.toString();
 }
 
 void Message::setAttribute(const std::string& key, const std::string& value)
@@ -42,7 +42,7 @@ std::string Message::toString() const
 	std::string retVal;
 	for (auto attrib : _attributes)
 	{
-		retVal += attrib.first + MSG_ATTR_VAL_DELIM + attrib.second + MSG_ATTR_DELIM;
+		retVal += attrib.first + MSG_CHAR_VAL_DELIM + attrib.second + MSG_CHAR_DELIM;
 	}
 	return retVal;
 }
@@ -101,7 +101,7 @@ Message Message::fromString(const std::string& msgStr)
 
 void Message::from(MsgAddress addr)
 {
-	_attributes[MSG_ATTR_NAME_FROM] = addr.to_string();
+	_attributes[MSG_ATTR_NAME_FROM] = addr.toString();
 }
 
 MsgAddress Message::from() const
@@ -109,14 +109,14 @@ MsgAddress Message::from() const
 	MsgAddress retVal;
 	if (hasKey(MSG_ATTR_NAME_FROM))
 	{
-		retVal = MsgAddress::from_string(_attributes.at(MSG_ATTR_NAME_FROM));
+		retVal = MsgAddress::fromString(_attributes.at(MSG_ATTR_NAME_FROM));
 	}
 	return retVal;
 }
 
 void Message::to(MsgAddress addr)
 {
-	_attributes[MSG_ATTR_NAME_TO] = addr.to_string();
+	_attributes[MSG_ATTR_NAME_TO] = addr.toString();
 }
 
 MsgAddress Message::to() const
@@ -124,7 +124,7 @@ MsgAddress Message::to() const
 	MsgAddress retVal;
 	if (hasKey(MSG_ATTR_NAME_TO))
 	{
-		retVal = MsgAddress::from_string(_attributes.at(MSG_ATTR_NAME_TO));
+		retVal = MsgAddress::fromString(_attributes.at(MSG_ATTR_NAME_TO));
 	}
 	return retVal;
 }
@@ -187,4 +187,14 @@ std::string Message::body() const
 		retVal = _attributes.at(MSG_ATTR_NAME_BODY);
 	}
 	return retVal;
+}
+
+void Message::clientSocket(Socket* s)
+{
+	_clientSocket = s;
+}
+
+Socket* Message::clientSocket() const
+{
+	return _clientSocket;
 }
