@@ -1,5 +1,6 @@
 #include "..\TestHarness\Comm.h"
 #include "..\TestHarness\Message.h"
+#include "..\TestHarness\Test.h"
 
 int main()
 {
@@ -19,8 +20,7 @@ int main()
 	msg.timestamp(Logger::CurrentTimeStamp());
 	msg.body("MattLib.DLL");
 	client.sendString(msg.toString());
-
-	std::this_thread::sleep_for(std::chrono::seconds(2));
+	getchar();
 	client.shutDown();
 	client.close();
 	system("pause");

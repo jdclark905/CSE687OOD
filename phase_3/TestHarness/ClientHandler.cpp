@@ -13,7 +13,20 @@ void ClientHandler::start()
 
 	// Start listener
 	_listener.start(*rcvr);
+	_responseThread = new std::thread(&ClientHandler::responder, this);
 }
+
+void ClientHandler::shutdown()
+{
+	Message msgShutdown;
+	msgShutdown.type(MSG_TYPE_SHUTDOWN);
+	_responseQueue.enqueue(msgShutdown);
+	_responseThread->join();
+}
+
+/////////////////////////////////////////
+// Message Receiver Class
+/////////////////////////////////////////
 
 ClientHandler::MsgReceiver::MsgReceiver(BlockingQueue<Message>& requestQueue) : _requestQueue(requestQueue)
 {
@@ -45,5 +58,15 @@ void ClientHandler::MsgReceiver::operator()(Socket& s)
 
 void ClientHandler::responder()
 {
-	Logger::ToConsole("ClientHandler responder started");
+	Logger::ToConsole("Response Handler responder started");
+	while (true)
+	{
+			Message msg = _responseQueue.dequeue();
+			Logger::ToConsole("Response Handler received message: " + msg.toString());
+			if (msg.type() == MSG_TYPE_SHUTDOWN)
+			{
+				break;
+			}
+	}
+	Logger::ToConsole("Response Handler stopped");
 }

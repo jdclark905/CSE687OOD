@@ -1,17 +1,16 @@
 #include "TestHandler.h"
-#include "ITest.h"
-
-#ifndef _WINDOWS_
-#include <Windows.h>
-#endif
+#include "Test.h"
 
 //////////////////////////////////////
 /*			TestHandler				*/
 //////////////////////////////////////
 
-TestHandler::TestHandler(BlockingQueue<Message>& requestQueue, BlockingQueue<Message>& responseQueue, int poolSize) : _requestQueue(requestQueue), _responseQueue(responseQueue), _poolSize(poolSize)
+#define RUNNER_MSG(id, msg) "Test runner " + TO_STR(id) + ": " + msg
+
+TestHandler::TestHandler(BlockingQueue<Message>& requestQueue, BlockingQueue<Message>& responseQueue, int poolSize)
+: _requestQueue(requestQueue), _responseQueue(responseQueue), _poolSize(poolSize)
 {
-	Logger::ToConsole("Test handler starting with " + std::to_string(poolSize) + " runners");
+	Logger::ToConsole("Test handler starting with " + TO_STR(poolSize) + " runners");
 	sleepTime = new int[_poolSize];
 }
 
@@ -38,7 +37,7 @@ void TestHandler::shutdown()
 
 	// Shutdown runner threads by placing shutdown message in queue
 	Message msgShutdown;
-	msgShutdown.type("shutdown");
+	msgShutdown.type(MSG_TYPE_SHUTDOWN);
 	_requestQueue.enqueue(msgShutdown);
 	
 	// Wait for runner threads to exit (join) and cleanup
@@ -59,24 +58,26 @@ void TestHandler::enqueue(Message msg)
 
 void TestHandler::runner(int id)
 {
-	typedef ITest* (__cdecl *GetTestObj)(void);
+	typedef Test* (__cdecl *GetTestObj)(void);
 	typedef bool (__cdecl *testProc)(void);
 	HINSTANCE hDLL = nullptr;
 	GetTestObj getTestObj;
-	//testProc test;
+	bool testResult;
+	bool causedException;
+	LogLevel logLevel;
+	std::string log = "Runner " + TO_STR(id) + ": ";
 
-	std::string runnerIdStr = "Test runner " + std::to_string(id);
-	Logger::ToConsole(runnerIdStr + ": starting");
+	Logger::ToConsole(RUNNER_MSG(id, "started"));
 
 	while (true)
 	{
 		//Logger::ToConsole(runnerIdStr + ": sleeping for " + std::to_string(sleepTime[id]) + " ms");
 		std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime[id]));
-		Logger::ToConsole(runnerIdStr + ": ready");
+		Logger::ToConsole(RUNNER_MSG(id, "ready"));
 
 		// Get next message from blocking queue
 		Message msg = _requestQueue.dequeue();
-		Logger::ToConsole(runnerIdStr + ": dequeued message: " + msg.toString());
+		Logger::ToConsole(RUNNER_MSG(id, "dequeued message: " + msg.toString()));
 
 		// If shutdown message, exit loop and stop thread
 		if (msg.type() == MSG_TYPE_SHUTDOWN)
@@ -96,57 +97,96 @@ void TestHandler::runner(int id)
 			hDLL = LoadLibrary(dllName.c_str());
 			if (hDLL != NULL)
 			{
-				Logger::ToConsole(runnerIdStr + ": loaded DLL " + dllName);
+				Logger::ToConsole(RUNNER_MSG(id, "loaded DLL " + dllName));
 				
 				// Get pointer to "getTestName" function in DLL
 				getTestObj = (GetTestObj)GetProcAddress(hDLL, FN_GET_TESTS);
 				if (getTestObj != NULL)
 				{
-					Logger::ToConsole(runnerIdStr + ": DLL function " + FN_GET_TESTS + " valid");
-					// Retrieve test function names and run
-					ITest* testObjPrev = nullptr;
-					for (ITest* testObj = getTestObj(); testObj != nullptr; testObj = testObj->next())
+					// Set logging level
+					if (msg.getValue(MSG_ATTR_NAME_LOGLEVEL) == MSG_LOGLVL_PFD)
 					{
+						logLevel = PassFailDetail;
+					}
+					else
+					{
+						logLevel = PassFailDetail;
+					}
+
+					// Retrieve test function names and run
+					Test* testObjPrev = nullptr;
+					int numTests = 0;
+					for (Test* testObj = getTestObj(); testObj != nullptr; testObj = testObj->next())
+					{
+						// Free memory of previous test instance
 						if (testObjPrev != nullptr)
 						{
 							delete testObjPrev;
 						}
-						Logger::ToConsole(runnerIdStr + ": test funciton " + testObj->name());
-						/*
-						test = (testProc)GetProcAddress(hDLL, testName.c_str());
-						if (test)
-						{*/
-							try
-							{
-								//bool result = test();
-								bool result = testObj->test();
-								Logger::ToConsole(runnerIdStr + ": function " + testObj->name() + " returned " + (result ? "pass" : "fail"));
-							}
-							catch (...)
-							{
-								Logger::ToConsole(runnerIdStr + ": exception while testing function " + testObj->name());
-							}
-						/*}
-						else
+
+						// Run test
+						numTests++;
+						testResult = false;
+						causedException = false;
+						try
 						{
-							Logger::ToConsole(runnerIdStr + ": error getting procaddress of " + testName);
-						}*/
-							testObjPrev = testObj;
+							testResult = testObj->test();
+						}
+						catch (...)
+						{
+							causedException = true;
+						}
+
+						// Log results
+						std::string consoleMsg = RUNNER_MSG(id, dllName + " test(" + TO_STR(numTests) + "): " + testObj->name() + " returned " + (testResult ? "pass" : "fail"));
+						msg.setAttribute(MSG_ATTR_NAME_RESULT, testResult ? "pass" : "fail");
+						if (!testResult && logLevel == PassFailDetail)
+						{
+							if (causedException)
+							{
+								msg.setAttribute(MSG_ATTR_NAME_DETAIL, "exception occurred");
+							}
+							else
+							{
+
+								msg.setAttribute(MSG_ATTR_NAME_DETAIL, testObj->message());
+							}
+						}
+						consoleMsg += " - " + msg.getValue(MSG_ATTR_NAME_DETAIL);
+						MsgAddress addr = msg.from();
+						msg.from(msg.to());
+						msg.to(addr);
+						msg.author("Test Harness runner " + TO_STR(id));
+						msg.type(MSG_TYPE_TEST_RESP);
+						Logger::ToConsole(consoleMsg);
+
+						// Send result to client
+						_responseQueue.enqueue(msg);
+
+						// Set previous test object to this one, for loop iteration delete
+						testObjPrev = testObj;
+						// Last test, delete and exit loop
+						if (testObj->next() == nullptr)
+						{
+							delete testObj;
+							break;
+						}
 					};
 
+					// Done running tests, send response to client
 				}
 				else
 				{
-					Logger::ToConsole(runnerIdStr + ": DLL does not support " + FN_GET_TESTS);
+					Logger::ToConsole(RUNNER_MSG(id, "DLL does not support " + FN_GET_TESTS));
 				}
 
 				// free_library
-				Logger::ToConsole(runnerIdStr + ": freeing library " + dllName);
+				Logger::ToConsole(RUNNER_MSG(id, "freeing library " + dllName));
 				FreeLibrary(hDLL);
 			}
 			else
 			{
-				Logger::ToConsole(runnerIdStr + ": error loading DLL " + dllName);
+				Logger::ToConsole(RUNNER_MSG(id, "error loading DLL " + dllName));
 			}
 		}
 		// otherwise unknown to test handler
@@ -156,5 +196,5 @@ void TestHandler::runner(int id)
 		}
 		sleepTime[id] = rand() % 20 + 10;
 	}
-	Logger::ToConsole(runnerIdStr + ": stopped");
+	Logger::ToConsole(RUNNER_MSG(id, "stopped"));
 }

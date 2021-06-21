@@ -23,10 +23,10 @@ public:
 	};
 
 private:
-	bool _running;
 	BlockingQueue<Message>& _requestQueue;
 	BlockingQueue<Message>& _responseQueue;
 	ServerSocket _listener;
+	std::thread* _responseThread;
 
 	// Function for receiving client messages (one thread per connection)
 	void receiver(Socket& s);

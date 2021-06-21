@@ -52,13 +52,13 @@
     <ClInclude Include="TestHandler.h">
       <Filter>TestEngine\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ITest.h">
-      <Filter>TestEngine\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Message.h">
       <Filter>TestEngine\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ClientHandler.h">
+      <Filter>TestEngine\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Test.h">
       <Filter>TestEngine\Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -42,7 +42,7 @@ std::string Message::toString() const
 	std::string retVal;
 	for (auto attrib : _attributes)
 	{
-		retVal += attrib.first + MSG_CHAR_VAL_DELIM + attrib.second + MSG_CHAR_DELIM;
+		retVal += attrib.first + MSG_CHAR_DELIM_VALU + attrib.second + MSG_CHAR_DELIM_ATTR;
 	}
 	return retVal;
 }

@@ -263,8 +263,6 @@ bool ServerSocket::bind()
 		return false;
 	}
 
-	Logger::ToConsole("ServerSocket: create socket successful");
-
 	struct sockaddr_in saddr;
 	saddr.sin_family = AF_INET;
 	saddr.sin_port = htons(_port);
@@ -279,7 +277,6 @@ bool ServerSocket::bind()
 		return false;
 	}
 
-	Logger::ToConsole("ServerSocket: bind listen socket successful");
 	return true;
 }
 
@@ -293,7 +290,6 @@ bool ServerSocket::listen()
 		_socket = INVALID_SOCKET;
 		return false;
 	}
-	Logger::ToConsole("ServerSocket: listen successful");
 	return true;
 }
 
