@@ -24,6 +24,7 @@ TestEngine::~TestEngine()
 void TestEngine::start()
 {
 	// test DLL load functionality
+	/*
 	Message msg;
 	msg.from(MsgAddress(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT));
 	msg.to(MsgAddress(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT));
@@ -35,6 +36,7 @@ void TestEngine::start()
 	_testHandler.enqueue(msg);
 	msg.body("MattLib - Copy (3).dll");
 	_testHandler.enqueue(msg);
+	*/
 
 	_testHandler.start();
 	_clientHandler.start();
