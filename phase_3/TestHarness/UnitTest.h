@@ -9,13 +9,26 @@
 using std::vector;
 using std::string;
 
+enum LogLevel {
+	PassFailOnly,
+	PassFailMessage,
+	PassFailMessageWithTimestamp
+};
+
+struct TestResult
+{
+	bool result;
+	std::string message = "";
+	std::string error = "";
+};
+
 // callable object that does not take any parameters
 struct assertion {
 	string assertion_type = "test";
 	string function_name = "func";
-	bool result = false;
-	int logging_level = 0;
-	int (*function)();
+	TestResult testResult;
+	LogLevel logLevel = PassFailOnly;
+	int (*fnptr)();
 };
 
 class UnitTest

@@ -2,3 +2,7 @@
 *.sln
 *.vcxproj
 *.filters
+/phase_3/TestClient/.vs/TestClient/v16/ipch/AutoPCH
+/phase_3/TestClient/.vs/TestClient/v16
+/phase_3/TestClient/Debug
+/phase_3/MattLib
