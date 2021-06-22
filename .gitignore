@@ -2,3 +2,9 @@
 *.sln
 *.vcxproj
 *.filters
+*.obj
+*.idb
+*.lastbuildstate
+*.tlog
+*.log
+*.pdb
