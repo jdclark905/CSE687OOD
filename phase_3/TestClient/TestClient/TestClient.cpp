@@ -1,94 +1,69 @@
-#include <string>
-#include <iostream>
-#include <WS2tcpip.h>
 #include "..\..\TestHarness\Message.h"
 #include "..\..\TestHarness\Logger.h"
 #include "..\..\TestHarness\Test.h"
 
-#pragma comment(lib, "ws2_32.lib")
 
-const std::string IP_ADDRESS = "127.0.0.1";
-const u_short PORT = 10000;
+void receiver(Socket* s)
+{
+	Logger::ToConsole("Response listener started");
+	while (s->validState())
+	{
+		// Receive message (without terminator)
+		std::string msgStr = s->recvString();
+		if (msgStr.length() == 0)
+		{
+			break;	// Invalid message string
+		}
+		Message msg = Message::fromString(msgStr);
+		msg.clientSocket(s);
+		Logger::ToConsole("Received message: " + msg.toString());
+		if (msg.type() == MSG_TYPE_SHUTDOWN)
+		{
+			break;
+		}
+	}
+	Logger::ToConsole("Response listener stopped");
 
-using namespace std;
-Message BuildMessage(MsgAddress myAddress, MsgAddress svrAddress, string body) {
-    Message msg(myAddress, svrAddress);
-    msg.type(MSG_TYPE_TEST_REQ);
-    msg.author("Client");
-    msg.timestamp(Logger::CurrentTimeStamp());
-    msg.body(body);
-    return msg; 
 }
 
-void main()
+Message buildMsg(MsgAddress from, MsgAddress to, std::string body)
 {
-    string ipAddress = IP_ADDRESS;     // IP Address of the server
-    int port = PORT;                   // Listening port # on the server
+	Message retVal(from, to);
+	retVal.author("Client");
+	retVal.type(MSG_TYPE_TEST_REQ);
+	retVal.timestamp(Logger::CurrentTimeStamp());
+	retVal.body(body);
+	return retVal;
+}
 
-    // Initializing Winsock
-    WSAData data;
-    WORD ver = MAKEWORD(2, 2);
-    int wsResult = WSAStartup(ver, &data);
-    if (wsResult != 0) 
-    {
-        cerr << "Can't Start Winsock, Err #" << wsResult << endl;
-        return;
-    }
+int main()
+{
+	WSAData wsaData;
+	WSAStartup(MAKEWORD(2, 2), &wsaData);
+	std::thread* receiverThread;
 
-    // Create Socket
-    SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
-    if (sock == INVALID_SOCKET) 
-    {
-        cerr << "Can't ceate socket, Err #" << WSAGetLastError() << endl;
-        WSACleanup();
-        return;
-    }
+	Logger::ToConsole("Testing comm...");
 
-    // Fill in a hint structure
-    sockaddr_in hint;
-    hint.sin_family = AF_INET;
-    hint.sin_port = htons(port);
-    inet_pton(AF_INET, ipAddress.c_str(), &hint.sin_addr);
-    
-    // Connect to server
-    int connResult = connect(sock, (sockaddr*)&hint, sizeof(hint));
-    if (connResult == SOCKET_ERROR)
-    {
-        cerr << "Can't connect to server, Err #" << WSAGetLastError() << endl;
-        closesocket(sock);
-        WSACleanup();
-        return;
-    }
+	struct MsgAddress svrAddress(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT), myAddress(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT + 1);
 
-    WSAData wsaData;
-    int retval = WSAStartup(MAKEWORD(2, 2), &wsaData);
-    if (retval > 0) Logger::ToConsole("Return value: " + retval);
+	ClientSocket client;
+	client.connect(svrAddress.IPAddr, svrAddress.Port);
+	if (client.validState())
+	{
+		receiverThread = new std::thread(&receiver, &client);
+	}
 
-    Logger::ToConsole("Client Connection Established...");
-
-    struct MsgAddress svrAddress(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT), myAddress(DEFAULT_LISTEN_IP, DEFAULT_LISTEN_PORT + 1);
-
-    ClientSocket client;
-    client.connect(svrAddress.IPAddr, svrAddress.Port);
-
-
-    Message matt = BuildMessage(myAddress, svrAddress, "MattLib.dll");
-    Message jamie = BuildMessage(myAddress, svrAddress, "JamieLib.dll");
-    Message tanay = BuildMessage(myAddress, svrAddress, "TanayLib.dll");
-
-    client.sendString(matt.toString());
-    std::this_thread::sleep_for(std::chrono::seconds(2));
-    client.sendString(jamie.toString());
-    std::this_thread::sleep_for(std::chrono::seconds(2));
-    client.sendString(tanay.toString());
-    std::this_thread::sleep_for(std::chrono::seconds(2));
-
-
-    client.shutDown();
-    client.close();
-    system("pause");
-
-    // Gracefully close down everything
-    closesocket(sock);
-    WSACleanup();
+	Message msgMatt = buildMsg(myAddress, svrAddress, "MattLib.DLL");
+	msgMatt.setAttribute(MSG_ATTR_NAME_LOGLEVEL, MSG_LOGLVL_PFD);
+	Message msgTanay = buildMsg(myAddress, svrAddress, "TanayDLL.DLL");
+	msgTanay.setAttribute(MSG_ATTR_NAME_LOGLEVEL, MSG_LOGLVL_PF);
+	Message msgJamie = buildMsg(myAddress, svrAddress, "JamieDLL.DLL");
+	msgJamie.setAttribute(MSG_ATTR_NAME_LOGLEVEL, MSG_LOGLVL_PFD);
+	client.sendString(msgMatt.toString());
+	client.sendString(msgTanay.toString());
+	client.sendString(msgJamie.toString());
+	getchar();
+	client.shutDown();
+	client.close();
+	system("pause");
 }
