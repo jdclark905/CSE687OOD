@@ -25,6 +25,16 @@ void receiver(Socket* s)
 
 }
 
+Message buildMsg(MsgAddress from, MsgAddress to, std::string body)
+{
+	Message retVal(from, to);
+	retVal.author("Client");
+	retVal.type(MSG_TYPE_TEST_REQ);
+	retVal.timestamp(Logger::CurrentTimeStamp());
+	retVal.body(body);
+	return retVal;
+}
+
 int main()
 {
 	WSAData wsaData;
@@ -42,12 +52,15 @@ int main()
 		receiverThread = new std::thread(&receiver, &client);
 	}
 
-	Message msg(myAddress, svrAddress);
-	msg.type(MSG_TYPE_TEST_REQ);
-	msg.author("Client");
-	msg.timestamp(Logger::CurrentTimeStamp());
-	msg.body("MattLib.DLL");
-	client.sendString(msg.toString());
+	Message msgMatt = buildMsg(myAddress, svrAddress, "MattLib.DLL");
+	msgMatt.setAttribute(MSG_ATTR_NAME_LOGLEVEL, MSG_LOGLVL_PFD);
+	Message msgTanay = buildMsg(myAddress, svrAddress, "TanayDLL.DLL");
+	msgTanay.setAttribute(MSG_ATTR_NAME_LOGLEVEL, MSG_LOGLVL_PF);
+	Message msgJamie = buildMsg(myAddress, svrAddress, "JamieDLL.DLL");
+	msgJamie.setAttribute(MSG_ATTR_NAME_LOGLEVEL, MSG_LOGLVL_PFD);
+	client.sendString(msgMatt.toString());
+	client.sendString(msgTanay.toString());
+	client.sendString(msgJamie.toString());
 	getchar();
 	client.shutDown();
 	client.close();

@@ -1,7 +1,6 @@
-#pragma once
-
 // MathLibrary.h - Contains declarations of math functions
 #pragma once
+#include "..\..\..\..\phase_3\TestHarness\Test.h"
 
 #ifdef MATHLIBRARY_EXPORTS
 #define MATHLIBRARY_API __declspec(dllexport)
@@ -36,6 +35,4 @@ extern "C" MATHLIBRARY_API unsigned long long fibonacci_current();
 extern "C" MATHLIBRARY_API unsigned fibonacci_index();
 
 // custom functions
-extern "C" MATHLIBRARY_API bool mathFunc1();
-extern "C" MATHLIBRARY_API bool mathFunc2();
-extern "C" MATHLIBRARY_API bool mathFunc3();
+extern "C" MATHLIBRARY_API Test* getTests();

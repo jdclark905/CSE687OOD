@@ -59,51 +59,72 @@ unsigned fibonacci_index()
 
 
 // CUSTOM FUNCTIONS
-bool mathFunc1()
+
+class MathFunc1 : public Test
 {
-    int a = 0;
-    int b = 1;
+public:
+	MathFunc1() : Test("MathFunc1"){}
+	virtual bool test() override
+	{
+		int a = 0;
+		int b = 1;
 
-    // do some other calculations
+		// do some other calculations
 
-    if (a > b)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
+		if (a > b)
+		{
+			_result = true;
+		}
+		else
+		{
+			_result = false;
+			_failMessage = "a < b, a == " + TO_STR(a) + ", b == " + TO_STR(b);
+		}
+		return _result;
+	}
+};
 
-bool mathFunc2()
+class MathFunc2 : public Test
 {
-    int a = 1;
-    int b = 0;
+public:
+	MathFunc2() : Test("MathFunc2"){}
+	virtual bool test() override
+	{
+		int a = 1;
+		int b = 0;
 
-    // do some other calculations
+		// do some other calculations
 
-    if (a > b)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
+		if (a > b)
+		{
+			_result = true;
+		}
+		else
+		{
+			_result = false;
+			_failMessage = "a < b, a == " + TO_STR(a) + ", b == " + TO_STR(b);
+		}
+		return _result;
+	}
+};
 
-bool mathFunc3()
+class MathFunc3 : public Test
 {
-    std::string("3.14").substr(10);
-    return false;
-}
+public:
+	MathFunc3() : Test("MathFunc3"){}
+	virtual bool test() override
+	{
+		std::string("3.14").substr(10);
+		return false;
+	}
+};
 
-std::vector<std::string> getTestNames()
+MATHLIBRARY_API Test* getTests()
 {
-    std::vector<std::string> names;
-    names.push_back("mathFunc1");
-    names.push_back("mathFunc2");
-    names.push_back("mathFunc3");
-    return names;
+	Test* test1 = new MathFunc1();
+	Test* test2 = new MathFunc2();
+	Test* test3 = new MathFunc3();
+	test1->next(test2);
+	test2->next(test3);
+	return test1;
 }

@@ -151,12 +151,13 @@ void TestHandler::runner(int id)
 
 								msg.setAttribute(MSG_ATTR_NAME_DETAIL, testObj->message());
 							}
+							consoleMsg += " - " + msg.getValue(MSG_ATTR_NAME_DETAIL);
 						}
-						consoleMsg += " - " + msg.getValue(MSG_ATTR_NAME_DETAIL);
 						MsgAddress addr = msg.from();
 						msg.from(msg.to());
 						msg.to(addr);
 						msg.author("Test Harness runner " + TO_STR(id));
+						msg.timestamp(Logger::CurrentTimeStamp());
 						msg.type(MSG_TYPE_TEST_RESP);
 						Logger::ToConsole(consoleMsg);
 
