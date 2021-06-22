@@ -3,18 +3,11 @@
 #include <string>
 #include <mutex>
 
+#define TO_STR(x) std::to_string(x)
+
 enum LogLevel {
 	PassFailOnly,
-	PassFailMessage,
-	PassFailMessageWithTimestamp
-};
-
-struct TestResult
-{
-	LogLevel level = PassFailOnly;
-	std::string message = "";
-	bool pass;
-	std::string error = "";
+	PassFailDetail,
 };
 
 class Logger
@@ -24,6 +17,7 @@ private:
 	static std::mutex _fileMutex;
 	static std::string _fileName;
 	static std::string _timestampFormat;
+	static LogLevel _logLevel;
 
 public:
 	Logger();

@@ -1,38 +1,55 @@
 #include "TestEngine.h"
 #include "Logger.h"
 
-TestEngine* TestEngine::_instance = nullptr;
-std::mutex TestEngine::_mtx;
+TestEngine TestEngine::_instance;
 
-TestEngine::TestEngine() : _msgQueue(), _testQueue(), _testHandlers()
+TestEngine& TestEngine::getInstance()
 {
-}
-
-TestEngine* TestEngine::getInstance()
-{
-	std::lock_guard<std::mutex> lock(_mtx);
-	if (_instance == nullptr)
-	{
-		_instance = new TestEngine();
-	}
 	return _instance;
 }
 
-void TestEngine::runMsgHandler()
-{
-
-}
-
-void TestEngine::runTestHandler(const int id)
+TestEngine::TestEngine() : _running(false),
+	_testHandler(_requestQueue, _responseQueue),
+	_clientHandler(_requestQueue, _responseQueue)
 {
 	
 }
 
+TestEngine::~TestEngine()
+{
+	if (_running)
+	{
+		shutdown();
+	}
+}
+
 void TestEngine::start()
 {
-	_msgHandler = std::thread(&runMsgHandler);
-	for (int i = 0; i < 3; i++)
-	{
-		_testHandlers.push_back(std::thread(&runTestHandler, i));
-	}
+	_testHandler.start();
+	_clientHandler.start();
+	_running = true;
+}
+
+void TestEngine::shutdown()
+{
+	_testHandler.shutdown();
+	_clientHandler.shutdown();
+	_running = false;
+}
+
+/////////////////////////////////////////////////
+//	Main entry point
+/////////////////////////////////////////////////
+int main(int argc, char *argv[])
+{
+	srand(time(0));
+	WSAData wsaData;
+	WSAStartup(MAKEWORD(2, 2), &wsaData);
+
+	TestEngine& testEngine = TestEngine::getInstance();
+	testEngine.start();
+	getchar();
+	testEngine.shutdown();
+
+	system("pause");
 }
