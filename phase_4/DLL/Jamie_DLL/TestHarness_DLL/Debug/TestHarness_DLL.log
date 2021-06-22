@@ -1,0 +1,17 @@
+﻿  TestHarness.cpp
+C:\Users\jdcla\Google Drive\Syracuse\Classes\687 - Objected Oriented Design\Code\DLLs\TestHarness_DLL\TestHarness_DLL\TestHarness.cpp(6,1): warning C4273: 'getTestNames': inconsistent dll linkage
+C:\Users\jdcla\Google Drive\Syracuse\Classes\687 - Objected Oriented Design\Code\DLLs\TestHarness_DLL\TestHarness_DLL\TestHarness.h(10,42): message : see previous definition of 'getTestNames'
+C:\Users\jdcla\Google Drive\Syracuse\Classes\687 - Objected Oriented Design\Code\DLLs\TestHarness_DLL\TestHarness_DLL\TestHarness.cpp(18,1): warning C4273: 'beTrue': inconsistent dll linkage
+C:\Users\jdcla\Google Drive\Syracuse\Classes\687 - Objected Oriented Design\Code\DLLs\TestHarness_DLL\TestHarness_DLL\TestHarness.h(11,33): message : see previous definition of 'beTrue'
+C:\Users\jdcla\Google Drive\Syracuse\Classes\687 - Objected Oriented Design\Code\DLLs\TestHarness_DLL\TestHarness_DLL\TestHarness.cpp(31,1): warning C4273: 'beFalse': inconsistent dll linkage
+C:\Users\jdcla\Google Drive\Syracuse\Classes\687 - Objected Oriented Design\Code\DLLs\TestHarness_DLL\TestHarness_DLL\TestHarness.h(12,33): message : see previous definition of 'beFalse'
+C:\Users\jdcla\Google Drive\Syracuse\Classes\687 - Objected Oriented Design\Code\DLLs\TestHarness_DLL\TestHarness_DLL\TestHarness.cpp(44,1): warning C4273: 'beEqual': inconsistent dll linkage
+C:\Users\jdcla\Google Drive\Syracuse\Classes\687 - Objected Oriented Design\Code\DLLs\TestHarness_DLL\TestHarness_DLL\TestHarness.h(13,33): message : see previous definition of 'beEqual'
+C:\Users\jdcla\Google Drive\Syracuse\Classes\687 - Objected Oriented Design\Code\DLLs\TestHarness_DLL\TestHarness_DLL\TestHarness.cpp(56,1): warning C4273: 'beTrueTest': inconsistent dll linkage
+C:\Users\jdcla\Google Drive\Syracuse\Classes\687 - Objected Oriented Design\Code\DLLs\TestHarness_DLL\TestHarness_DLL\TestHarness.h(15,33): message : see previous definition of 'beTrueTest'
+C:\Users\jdcla\Google Drive\Syracuse\Classes\687 - Objected Oriented Design\Code\DLLs\TestHarness_DLL\TestHarness_DLL\TestHarness.cpp(61,1): warning C4273: 'beFalseTest': inconsistent dll linkage
+C:\Users\jdcla\Google Drive\Syracuse\Classes\687 - Objected Oriented Design\Code\DLLs\TestHarness_DLL\TestHarness_DLL\TestHarness.h(16,33): message : see previous definition of 'beFalseTest'
+C:\Users\jdcla\Google Drive\Syracuse\Classes\687 - Objected Oriented Design\Code\DLLs\TestHarness_DLL\TestHarness_DLL\TestHarness.cpp(66,1): warning C4273: 'beEqualTest': inconsistent dll linkage
+C:\Users\jdcla\Google Drive\Syracuse\Classes\687 - Objected Oriented Design\Code\DLLs\TestHarness_DLL\TestHarness_DLL\TestHarness.h(17,33): message : see previous definition of 'beEqualTest'
+     Creating library C:\Users\jdcla\Google Drive\Syracuse\Classes\687 - Objected Oriented Design\Code\DLLs\TestHarness_DLL\Debug\TestHarness_DLL.lib and object C:\Users\jdcla\Google Drive\Syracuse\Classes\687 - Objected Oriented Design\Code\DLLs\TestHarness_DLL\Debug\TestHarness_DLL.exp
+  TestHarness_DLL.vcxproj -> C:\Users\jdcla\Google Drive\Syracuse\Classes\687 - Objected Oriented Design\Code\DLLs\TestHarness_DLL\Debug\TestHarness_DLL.dll
