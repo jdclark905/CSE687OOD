@@ -1,15 +1,18 @@
-﻿Build started 6/21/2021 3:45:39 PM.
-     1>Project "C:\Users\matthew.murphy\Documents\CSE687OOD\phase_3\MattLib\MattLib.vcxproj" on node 2 (Build target(s)).
+﻿Build started 6/21/2021 7:02:58 PM.
+     1>Project "D:\CSE687OOD\phase_3\MattLib\MattLib.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D MATTLIBRARY_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /D _AFXDLL /Gm /EHs /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt MattLib.cpp
+         D:\Program Files\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D MATTLIBRARY_EXPORTS /D _WINDLL /D _MBCS /Gm /EHs /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt dllmain.cpp MattLib.cpp pch.cpp
+         pch.cpp
          MattLib.cpp
+         dllmain.cpp
+         Generating Code...
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\matthew.murphy\Documents\CSE687OOD\phase_3\TestHarness\Debug\MattLib.DLL" /INCREMENTAL /NOLOGO /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"C:\Users\matthew.murphy\Documents\CSE687OOD\phase_3\TestHarness\Debug\MattLib.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\matthew.murphy\Documents\CSE687OOD\phase_3\TestHarness\Debug\MattLib.lib" /MACHINE:X86 /DLL Debug\dllmain.obj
+         D:\Program Files\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\CSE687OOD\phase_3\TestHarness\Debug\MattLib.DLL" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\CSE687OOD\phase_3\TestHarness\Debug\MattLib.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\CSE687OOD\phase_3\TestHarness\Debug\MattLib.lib" /MACHINE:X86 /DLL Debug\dllmain.obj
          Debug\MattLib.obj
          Debug\pch.obj
-         MattLib.vcxproj -> C:\Users\matthew.murphy\Documents\CSE687OOD\phase_3\TestHarness\Debug\MattLib.DLL
-     1>Done Building Project "C:\Users\matthew.murphy\Documents\CSE687OOD\phase_3\MattLib\MattLib.vcxproj" (Build target(s)).
+         MattLib.vcxproj -> D:\CSE687OOD\phase_3\TestHarness\Debug\MattLib.DLL
+     1>Done Building Project "D:\CSE687OOD\phase_3\MattLib\MattLib.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.86
+Time Elapsed 00:00:02.06

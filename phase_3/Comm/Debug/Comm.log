@@ -1,16 +1,20 @@
-﻿Build started 6/21/2021 10:45:52 AM.
-     1>Project "C:\Users\matthew.murphy\Documents\CSE687OOD\phase_3\Comm\Comm.vcxproj" on node 2 (Build target(s)).
+﻿Build started 6/21/2021 7:31:20 PM.
+     1>Project "D:\CSE687OOD\phase_3\Comm\Comm.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt CommTest.cpp
+         D:\Program Files\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D TEST_COMM /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ..\TestHarness\Message.cpp CommTest.cpp
+         Message.cpp
+         Generating Code...
+         Compiling...
          CommTest.cpp
+         Generating Code...
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\matthew.murphy\Documents\CSE687OOD\phase_3\TestHarness\Debug\Comm.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\matthew.murphy\Documents\CSE687OOD\phase_3\TestHarness\Debug\Comm.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\matthew.murphy\Documents\CSE687OOD\phase_3\TestHarness\Debug\Comm.lib" /MACHINE:X86 Debug\Comm.obj
+         D:\Program Files\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\CSE687OOD\phase_3\TestHarness\Debug\Comm.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\CSE687OOD\phase_3\TestHarness\Debug\Comm.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\CSE687OOD\phase_3\TestHarness\Debug\Comm.lib" /MACHINE:X86 Debug\Comm.obj
          Debug\Logger.obj
          Debug\Message.obj
          Debug\CommTest.obj
-         Comm.vcxproj -> C:\Users\matthew.murphy\Documents\CSE687OOD\phase_3\TestHarness\Debug\Comm.exe
-     1>Done Building Project "C:\Users\matthew.murphy\Documents\CSE687OOD\phase_3\Comm\Comm.vcxproj" (Build target(s)).
+         Comm.vcxproj -> D:\CSE687OOD\phase_3\TestHarness\Debug\Comm.exe
+     1>Done Building Project "D:\CSE687OOD\phase_3\Comm\Comm.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:01.09
+Time Elapsed 00:00:03.28

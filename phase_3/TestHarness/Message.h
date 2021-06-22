@@ -4,9 +4,9 @@
 #include <unordered_map>
 #include "Comm.h"
 
-#define MSG_CHAR_DELIM_ATTR ";"				// delimeter between attribute entries
+#define MSG_CHAR_DELIM_ATTR "\n"			// delimeter between attribute entries
 #define MSG_CHAR_DELIM_VALU "="				// delimeter between attribute key and value
-#define MSG_CHAR_TERM '\n'					// message termination character
+#define MSG_CHAR_TERM "\r"					// message termination character
 
 #define MSG_ATTR_NAME_FROM "from"			// endpoint of message source
 #define MSG_ATTR_NAME_TO "to"				// endpoint of message destination
@@ -66,6 +66,7 @@ public:
 	std::string getValue(const std::string& key) const;
 	bool hasKey(const std::string& key) const;
 	std::string toString() const;
+	std::string printString() const;
 	static std::vector<std::string> splitAttributes(const std::string& src, const char* delim = MSG_CHAR_DELIM_ATTR);
 	static std::pair <std::string, std::string> splitKeyValue(const std::string&, const char* delim = MSG_CHAR_DELIM_VALU);
 	static Message fromString(const std::string&);

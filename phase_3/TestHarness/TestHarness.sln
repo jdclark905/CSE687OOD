@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MattLib", "..\MattLib\MattL
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Comm", "..\Comm\Comm.vcxproj", "{E2876709-B6B0-4226-ABED-262E557D0645}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestClient", "..\TestClient\TestClient\TestClient.vcxproj", "{F21C7BE8-C791-4EEB-99A8-C9A91168CB1A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -43,6 +45,14 @@ Global
 		{E2876709-B6B0-4226-ABED-262E557D0645}.Release|Win32.ActiveCfg = Release|Win32
 		{E2876709-B6B0-4226-ABED-262E557D0645}.Release|Win32.Build.0 = Release|Win32
 		{E2876709-B6B0-4226-ABED-262E557D0645}.Release|x64.ActiveCfg = Release|Win32
+		{F21C7BE8-C791-4EEB-99A8-C9A91168CB1A}.Debug|ARM.ActiveCfg = Debug|Win32
+		{F21C7BE8-C791-4EEB-99A8-C9A91168CB1A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F21C7BE8-C791-4EEB-99A8-C9A91168CB1A}.Debug|Win32.Build.0 = Debug|Win32
+		{F21C7BE8-C791-4EEB-99A8-C9A91168CB1A}.Debug|x64.ActiveCfg = Debug|Win32
+		{F21C7BE8-C791-4EEB-99A8-C9A91168CB1A}.Release|ARM.ActiveCfg = Release|Win32
+		{F21C7BE8-C791-4EEB-99A8-C9A91168CB1A}.Release|Win32.ActiveCfg = Release|Win32
+		{F21C7BE8-C791-4EEB-99A8-C9A91168CB1A}.Release|Win32.Build.0 = Release|Win32
+		{F21C7BE8-C791-4EEB-99A8-C9A91168CB1A}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

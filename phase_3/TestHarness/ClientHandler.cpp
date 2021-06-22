@@ -46,26 +46,31 @@ void ClientHandler::MsgReceiver::operator()(Socket& s)
 		}
 		Message msg = Message::fromString(msgStr);
 		msg.clientSocket(&s);
-		Logger::ToConsole("ClientHandler received message: " + msg.toString());
+		Logger::ToConsole("ClientHandler received message:\n" + msg.printString());
 		_requestQueue.enqueue(msg);
 		if (msg.type() == MSG_TYPE_SHUTDOWN)
 		{
 			break;
 		}
 	}
-	Logger::ToConsole("ClientHandler terminating");
+	Logger::ToConsole("ClientHandler stopped");
 }
 
+// Response handler thread function
 void ClientHandler::responder()
 {
 	Logger::ToConsole("Response Handler responder started");
 	while (true)
 	{
 			Message msg = _responseQueue.dequeue();
-			Logger::ToConsole("Response Handler received message: " + msg.toString());
 			if (msg.type() == MSG_TYPE_SHUTDOWN)
 			{
 				break;
+			}
+			Socket* s = msg.clientSocket();
+			if (s->validState())
+			{
+				s->sendString(msg.toString());
 			}
 	}
 	Logger::ToConsole("Response Handler stopped");

@@ -77,7 +77,7 @@ void TestHandler::runner(int id)
 
 		// Get next message from blocking queue
 		Message msg = _requestQueue.dequeue();
-		Logger::ToConsole(RUNNER_MSG(id, "dequeued message: " + msg.toString()));
+		Logger::ToConsole(RUNNER_MSG(id, "dequeued message:\n" + msg.printString()));
 
 		// If shutdown message, exit loop and stop thread
 		if (msg.type() == MSG_TYPE_SHUTDOWN)
@@ -110,7 +110,7 @@ void TestHandler::runner(int id)
 					}
 					else
 					{
-						logLevel = PassFailDetail;
+						logLevel = PassFailOnly;
 					}
 
 					// Retrieve test function names and run
@@ -192,7 +192,7 @@ void TestHandler::runner(int id)
 		// otherwise unknown to test handler
 		else
 		{
-
+			Logger::ToConsole("Unhandled message type received");
 		}
 		sleepTime[id] = rand() % 20 + 10;
 	}

@@ -1,5 +1,4 @@
 #include "Message.h"
-#include "Logger.h"
 
 Message::Message() {}
 
@@ -43,6 +42,16 @@ std::string Message::toString() const
 	for (auto attrib : _attributes)
 	{
 		retVal += attrib.first + MSG_CHAR_DELIM_VALU + attrib.second + MSG_CHAR_DELIM_ATTR;
+	}
+	return retVal;
+}
+
+std::string Message::printString() const
+{
+	std::string retVal;
+	for (auto attrib : _attributes)
+	{
+		retVal += '\t' + attrib.first + MSG_CHAR_DELIM_VALU + attrib.second + '\n';
 	}
 	return retVal;
 }

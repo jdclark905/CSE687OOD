@@ -1,11 +1,14 @@
 #include <string>
 #include <iostream>
 #include <WS2tcpip.h>
-#include "Message.h"
+#include "..\..\TestHarness\Message.h"
+#include "..\..\TestHarness\Logger.h"
+#include "..\..\TestHarness\Test.h"
+
 #pragma comment(lib, "ws2_32.lib")
 
-constexpr auto IP_ADDRESS = "127.0.0.1";
-constexpr auto PORT = 10000;
+const std::string IP_ADDRESS = "127.0.0.1";
+const u_short PORT = 10000;
 
 using namespace std;
 Message BuildMessage(MsgAddress myAddress, MsgAddress svrAddress, string body) {
@@ -16,6 +19,7 @@ Message BuildMessage(MsgAddress myAddress, MsgAddress svrAddress, string body) {
     msg.body(body);
     return msg; 
 }
+
 void main()
 {
     string ipAddress = IP_ADDRESS;     // IP Address of the server
